@@ -16,12 +16,25 @@ files
 	".gitignore"
 }
 
+includedirs {
+		"Framework/Source",
+		"Game/Source",
+	}
+
+	links {
+		"Framework",
+		"opengl32",
+	}
+
 project "Framework"
 	kind "staticLib"
 	location "build/Framework"
 
-files
-{
-	"Framework/Source/**.cpp",
-	"Framework/Source/**.h",
-}
+files {
+		"Framework/Source/**.cpp",
+		"Framework/Source/**.h",
+	}
+
+	includedirs {
+		"Framework/Source",
+	}

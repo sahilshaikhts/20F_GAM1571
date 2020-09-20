@@ -1,7 +1,11 @@
 workspace "Game"
+
 	configurations{"Debug","Release"}
-	location "build"
 	platforms{"x64"}
+
+	location "build"
+	characterset "MBCS"
+	startproject	"Game"
 
 project "Game"
 	location "build/Game"
@@ -16,25 +20,29 @@ files
 	".gitignore"
 }
 
-includedirs {
-		"Framework/Source",
-		"Game/Source",
-	}
+includedirs
+{
+	"Framework/Source",
+	"Game/Source"
+}
 
-	links {
-		"Framework",
-		"opengl32",
-	}
+links
+{
+	"Framework",
+	"opengl32",
+}
 
 project "Framework"
-	kind "staticLib"
+	kind "staticlib"
 	location "build/Framework"
 
-files {
-		"Framework/Source/**.cpp",
-		"Framework/Source/**.h",
-	}
+files
+{
+	"Framework/Source/**.cpp",
+	"Framework/Source/**.h"
+}
 
-	includedirs {
-		"Framework/Source",
-	}
+includedirs
+{
+	"Framework/Source",
+}

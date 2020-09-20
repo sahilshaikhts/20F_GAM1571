@@ -13,7 +13,7 @@
 #include "GL/GLExtensions.h"
 #include "GL/WGLExtensions.h"
 #include "GL/MyGLContext.h"
-
+#include "GameCore.h"
 namespace fw {
 
 // Initialize opengl window on windows, huge chunks taken from nehe
@@ -76,7 +76,7 @@ bool FWCore::Init(int width, int height)
     return true;
 }
 
-int FWCore::Run()
+int FWCore::Run(GameCore* pGame)
 {
     // Main loop.
     MSG message;
@@ -98,6 +98,9 @@ int FWCore::Run()
         }
         else
         {
+            pGame->Update();
+            pGame->Draw();
+
             SwapBuffers();
 
             // Backup the state of the keyboard and mouse.
@@ -303,7 +306,7 @@ bool FWCore::CreateGLWindow(char* title, int width, int height, unsigned char co
 
     // Create an OpenGL rendering context.
     m_pMyGLContext = new MyGLContext();
-    if( m_pMyGLContext->Create( m_hInstance, m_hDeviceContext, 4, 4, true, colorBits, alphaBits, zBits, stencilBits, multisampleSize ) == false )
+    if( m_pMyGLContext->Create( m_hInstance, m_hDeviceContext, 4, 5, true, colorBits, alphaBits, zBits, stencilBits, multisampleSize ) == false )
         return FailAndCleanup( "Failed to create WGL context." );
 
     ShowWindow( m_hWnd, SW_SHOW );   // Show the window.

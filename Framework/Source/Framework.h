@@ -8,6 +8,12 @@
 
 #include "FrameworkPCH.h"
 #include "FWCore.h"
+
 #include "GameCore.h"
+#include "Utility/ShaderProgram.h"
+#include "Utility/Helpers.h"
+
+#include "Vector2.h"
+#include "Mesh.h"
 
 #endif //__Framework_H__

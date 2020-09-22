@@ -38,7 +38,6 @@ namespace fw {
 
         float* attribs = new float[m_NumVertices * 2];
         std::copy(vertices.begin(), vertices.end(), attribs);
-        m_PrimitiveType = GL_TRIANGLES;
 
         // Copy our attribute data into the VBO.
         int numAttributeComponents = m_NumVertices * 2; // x & y for each vertex.
@@ -101,6 +100,11 @@ namespace fw {
         vertices.push_back(position.y);
         m_NumVertices++;
         GenerateMesh();
+    }
+
+    void Mesh::SetDrawMode(int mode)
+    {
+        m_PrimitiveType = mode;
     }
 
 }

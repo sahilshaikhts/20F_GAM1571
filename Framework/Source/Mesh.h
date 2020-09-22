@@ -11,7 +11,7 @@ namespace fw {
        // void Draw(float x,float y,ShaderProgram* aShader);
         void AddVertex(float aX,float aY);
         void AddVertex(Vector2 position);
-
+        void SetDrawMode(int mode);
         void GenerateMesh();
         Vector2 ConvertScreenToWorldPosition(Vector2 value);
     protected:

@@ -26,6 +26,7 @@ void Game::Init()
     m_pShader = new fw::ShaderProgram("Data/Basic.vert", "Data/Basic.frag");
     m_pMesh = new fw::Mesh();
     Human();
+    Animal();
 }
 
 void Game::Update()
@@ -46,7 +47,7 @@ void Game::Draw()
 void Game::Human()
 {
     Vector2 pos;
-
+    m_pMesh->SetDrawMode(4);
     //Hair
     {
         pos.Set(120, 580);
@@ -191,9 +192,81 @@ void Game::Human()
 
 void Game::Animal()
 {
+    Vector2 pos;
+    
+    fw::Mesh* lMesh=new fw::Mesh;
+    
+    lMesh->SetDrawMode(1);
+    //HEAD
+    {
+        pos.Set(560, 320);
+        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
 
+        pos.Set(500, 360);
+        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(500, 320);
+        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(500, 360);
+        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(500, 390);
+        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(520, 330);
+        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
+    }
+
+    //BODY
+    {
+        pos.Set(500, 280);
+        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(400, 290);
+        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(500, 340);
+        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(400, 290);
+        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(400, 320);
+        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(500, 340);
+        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
+
+    }
+
+    //Legs
+    {
+        pos.Set(400, 320);
+        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(380, 300);
+        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(400, 200);
+        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
+
+
+        pos.Set(500, 280);
+        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
+        
+        pos.Set(470, 210);
+        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(470, 290);
+        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
+
+
+    }
     GameObject h;
-    h.SetMesh(m_pMesh);
+
+    h.SetMesh(lMesh);
     h.SetShader(m_pShader);
+    
     objects.push_back(h);
 }

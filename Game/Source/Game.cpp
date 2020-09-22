@@ -48,6 +48,7 @@ void Game::Human()
 {
     Vector2 pos;
     m_pMesh->SetDrawMode(4);
+
     //Hair
     {
         pos.Set(120, 580);
@@ -106,33 +107,34 @@ void Game::Human()
 
         pos.Set(190, 385);
         m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+    }
+    //LEGS
+    {   pos.Set(100, 385);
+    m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
 
-        //LEGS
-        pos.Set(100, 385);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-        
-        pos.Set(90, 225);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+    pos.Set(90, 225);
+    m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
 
-        pos.Set(145, 385);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+    pos.Set(145, 385);
+    m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
 
-        pos.Set(190, 385);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+    pos.Set(190, 385);
+    m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
 
-        pos.Set(200, 225);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+    pos.Set(200, 225);
+    m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
 
-        pos.Set(145, 385);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-        //ARM LEFT
+    pos.Set(145, 385);
+    m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+    }
+    //ARM LEFT
+    {
         pos.Set(120, 522);
         m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
 
         pos.Set(80, 490);
         m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-        
+
         pos.Set(50, 400);
         m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
 
@@ -153,13 +155,13 @@ void Game::Human()
 
         pos.Set(80, 440);
         m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-        //ARM RIGHT
-
+    }
+    //ARM RIGHT
+    {
         pos.Set(170, 522);
         m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
 
-        pos.Set(210,490);
+        pos.Set(210, 490);
         m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
 
         pos.Set(240, 400);
@@ -196,7 +198,7 @@ void Game::Animal()
     
     fw::Mesh* lMesh=new fw::Mesh;
     
-    lMesh->SetDrawMode(1);
+    lMesh->SetDrawMode(4);
     //HEAD
     {
         pos.Set(560, 320);

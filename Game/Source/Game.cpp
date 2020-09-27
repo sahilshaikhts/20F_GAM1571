@@ -42,7 +42,7 @@ void Game::Init()
 void Game::Update(float deltaTime)
 {
     uiManager->StartFrame(deltaTime);
-    //ImGui::ShowDemoWindow();
+    ImGui::ShowDemoWindow();
 }
 
 void Game::Draw()

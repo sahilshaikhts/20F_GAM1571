@@ -1,18 +1,20 @@
 #pragma once
-namespace fw
+
+namespace fw {
+
+class FWCore;
+
+class GameCore
 {
-	class FWCore;
+public:
+    GameCore(FWCore* pFramework);
+    virtual ~GameCore();
 
-	class GameCore
-	{
-	protected:
-		FWCore* m_pFramework;
+    virtual void Update(float deltaTime) = 0;
+    virtual void Draw() = 0;
 
-	public:
-		GameCore(FWCore* pFramework);
-		virtual ~GameCore();
-		virtual void Update(float deltaTime) = 0;
-		virtual void Draw() = 0;
-	};
-}
+protected:
+    FWCore* m_pFramework;
+};
 
+} // namespace fw

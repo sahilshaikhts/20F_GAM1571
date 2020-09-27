@@ -8,14 +8,14 @@
 // 3. This notice may not be removed or altered from any source distribution.
 
 #include "FrameworkPCH.h"
-#include "Utility/Helpers.h"
 
 #include "FWCore.h"
 #include "GL/GLExtensions.h"
 #include "GL/WGLExtensions.h"
 #include "GL/MyGLContext.h"
-
 #include "GameCore.h"
+#include "Utility/Helpers.h"
+
 namespace fw {
 
 // Initialize opengl window on windows, huge chunks taken from nehe
@@ -106,7 +106,7 @@ int FWCore::Run(GameCore* pGame)
             double deltaTime = currentTime - previousTime;
             previousTime = currentTime;
 
-            pGame->Update((float)deltaTime);
+            pGame->Update( (float)deltaTime );
             pGame->Draw();
 
             SwapBuffers();
@@ -314,7 +314,7 @@ bool FWCore::CreateGLWindow(char* title, int width, int height, unsigned char co
 
     // Create an OpenGL rendering context.
     m_pMyGLContext = new MyGLContext();
-    if( m_pMyGLContext->Create( m_hInstance, m_hDeviceContext, 4, 5, true, colorBits, alphaBits, zBits, stencilBits, multisampleSize ) == false )
+    if( m_pMyGLContext->Create( m_hInstance, m_hDeviceContext, 4, 4, true, colorBits, alphaBits, zBits, stencilBits, multisampleSize ) == false )
         return FailAndCleanup( "Failed to create WGL context." );
 
     ShowWindow( m_hWnd, SW_SHOW );   // Show the window.

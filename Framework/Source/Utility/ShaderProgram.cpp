@@ -1,7 +1,6 @@
 #include "FrameworkPCH.h"
 
 #include "ShaderProgram.h"
-
 #include "Helpers.h"
 
 namespace fw {

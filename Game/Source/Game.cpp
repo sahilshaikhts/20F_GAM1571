@@ -1,12 +1,12 @@
 #include "Framework.h"
-#include "GameObject.h"
 
 #include "Game.h"
 
 
-Game::Game()
+Game::Game(fw::FWCore* pFramework) :fw::GameCore(pFramework)
 {
 }
+
 
 Game::~Game()
 {
@@ -18,19 +18,31 @@ Game::~Game()
         delete m_pMesh;
         m_pMesh = nullptr;
     }
+    
+    delete uiManager;
 
+    for (fw::GameObject* obj : objects)
+    {
+        delete obj;
+    }
 }
 
 void Game::Init()
 {
+    uiManager = new fw::ImGuiManager(m_pFramework);
+
+    uiManager->Init();
+
     m_pShader = new fw::ShaderProgram("Data/Basic.vert", "Data/Basic.frag");
     m_pMesh = new fw::Mesh();
     Human();
     Animal();
 }
 
-void Game::Update()
+void Game::Update(float deltaTime)
 {
+    uiManager->StartFrame(deltaTime);
+    //ImGui::ShowDemoWindow();
 }
 
 void Game::Draw()
@@ -40,8 +52,10 @@ void Game::Draw()
 
     for(auto obj : objects)
     {
-        obj.Draw();
+        obj->Draw();
     }
+
+    uiManager->EndFrame();
 }
 
 void Game::Human()
@@ -186,9 +200,9 @@ void Game::Human()
         m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
     }
 
-    GameObject h;
-    h.SetMesh(m_pMesh);
-    h.SetShader(m_pShader);
+    fw::GameObject* h=new fw::GameObject();
+    h->SetMesh(m_pMesh);
+    h->SetShader(m_pShader);
     objects.push_back(h);
 }
 
@@ -196,7 +210,7 @@ void Game::Animal()
 {
     Vector2 pos;
     
-    fw::Mesh* lMesh=new fw::Mesh;
+    fw::Mesh* lMesh=new fw::Mesh();
     
     lMesh->SetDrawMode(4);
     //HEAD
@@ -265,10 +279,10 @@ void Game::Animal()
 
 
     }
-    GameObject h;
+    fw::GameObject* h = new fw::GameObject();
 
-    h.SetMesh(lMesh);
-    h.SetShader(m_pShader);
+    h->SetMesh(lMesh);
+    h->SetShader(m_pShader);
     
     objects.push_back(h);
 }

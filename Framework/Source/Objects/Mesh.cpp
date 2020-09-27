@@ -1,19 +1,25 @@
 #include "FrameworkPCH.h"
 #include "Mesh.h"
 #include "Vector2.h"
+#include "Utility/ShaderProgram.h"
 
 namespace fw {
 
-    Mesh::Mesh()
-    {
+    Mesh::Mesh(){
+
     }
+
 
     Mesh::~Mesh()
     {
+        glDeleteBuffers(1, &m_VBO);
     }
 
-    void Mesh::Draw()
+    void Mesh::Draw(float x, float y, ShaderProgram* pShader)
     {
+
+        glUseProgram(pShader->GetProgram());
+
         // Set this VBO to be the currently active one.
         glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 
@@ -43,20 +49,22 @@ namespace fw {
         int numAttributeComponents = m_NumVertices * 2; // x & y for each vertex.
         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numAttributeComponents, attribs, GL_STATIC_DRAW);
 
-
-        delete[] attribs;
+        if (attribs != nullptr) { //Release memory
+            delete[] attribs;
+            attribs = nullptr;
+        }
     }
 
-    Vector2  Mesh::ConvertScreenToWorldPosition(Vector2 sPosition)
+    Vector2  Mesh::ConvertScreenToWorldPosition(Vector2 scrn_position)
     {
         Vector2 newPos;
 
         //For x
         float pX;
         float screenHalf = (600 / 2);
-        if (sPosition.x < screenHalf)
+        if (scrn_position.x < screenHalf)
         {
-            pX = sPosition.x / screenHalf;
+            pX = scrn_position.x / screenHalf;
             if (pX > 0)
                 newPos.x = -(1 - pX);
             else
@@ -64,14 +72,14 @@ namespace fw {
         }
         else
         {
-            newPos.x = (sPosition.x - screenHalf) / (600 - screenHalf);
+            newPos.x = (scrn_position.x - screenHalf) / (600 - screenHalf);
         }
 
         //For y
         float pY = 0;
-        if (sPosition.y < screenHalf)
+        if (scrn_position.y < screenHalf)
         {
-            pY = sPosition.y / screenHalf;
+            pY = scrn_position.y / screenHalf;
             if (pY > 0)
                 newPos.y = -(1 - pY);
             else
@@ -79,7 +87,7 @@ namespace fw {
         }
         else
         {
-            newPos.y = (sPosition.y - screenHalf) / (600 - screenHalf);
+            newPos.y = (scrn_position.y - screenHalf) / (600 - screenHalf);
         }
 
         return newPos;

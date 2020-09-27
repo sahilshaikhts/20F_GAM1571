@@ -8,11 +8,13 @@
 // 3. This notice may not be removed or altered from any source distribution.
 
 #include "FrameworkPCH.h"
+#include "Utility/Helpers.h"
 
 #include "FWCore.h"
 #include "GL/GLExtensions.h"
 #include "GL/WGLExtensions.h"
 #include "GL/MyGLContext.h"
+
 #include "GameCore.h"
 namespace fw {
 
@@ -82,6 +84,8 @@ int FWCore::Run(GameCore* pGame)
     MSG message;
     bool done = false;
 
+    double previousTime = GetSystemTimeSinceGameStart();
+
     while( !done )
     {
         if( PeekMessage( &message, nullptr, 0, 0, PM_REMOVE ) )
@@ -98,7 +102,11 @@ int FWCore::Run(GameCore* pGame)
         }
         else
         {
-            pGame->Update();
+            double currentTime = GetSystemTimeSinceGameStart();
+            double deltaTime = currentTime - previousTime;
+            previousTime = currentTime;
+
+            pGame->Update((float)deltaTime);
             pGame->Draw();
 
             SwapBuffers();

@@ -20,15 +20,14 @@ files
 	"Game/Data/**.frag",
 	"GenerateProjectFiles.bat",
 	"premake5.lua",
-	".gitignore"
+	".gitignore",
 }
 
 includedirs
 {
 	"Framework/Source",
 	"Game/Source",
-	"Game/Data",
-	"Framework/Source/Utility"
+	
 }
 
 links
@@ -44,11 +43,13 @@ project "Framework"
 files
 {
 	"Framework/Source/**.cpp",
-	"Framework/Source/**.h",	
+	"Framework/Source/**.h",
+	"Framework/Libraries/iamgui/*cpp",
+	"Framework/Libraries/iamgui/*.h",	
 }
 
 includedirs
 {
 	"Framework/Source",
-	"Framework/Source/Utility"
+	"Framework/Libraries",
 }

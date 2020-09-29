@@ -6,7 +6,6 @@
 namespace fw {
 	GameObject::GameObject()
 	{
-		//-1 as the origin(0,0) will be at (-1,-1)
 		position.x = 0;
 		position.y = 0;
 

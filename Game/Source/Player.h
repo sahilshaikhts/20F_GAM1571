@@ -3,11 +3,10 @@
 #include "Objects/GameObject.h"
 class Player :public fw::GameObject
 {
-	fw::GameCore* frameWork;
-
+	fw::FWCore* frameWork;
+	float previousTime;
 public:
-	Player(fw::GameCore* aCore);
-	void Draw();
+	Player(fw::FWCore* aCore);
 	void Update();
 
 };

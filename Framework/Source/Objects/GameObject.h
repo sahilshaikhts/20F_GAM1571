@@ -5,12 +5,10 @@ namespace fw {
 	class Mesh;
 	class ShaderProgram;
 	class FrameWorkPCH;
-	class GameCore;
 	class GameObject
 	{
 	public:
 		vec2 position;
-		GameCore* core;
 		GameObject();
 		~GameObject();
 

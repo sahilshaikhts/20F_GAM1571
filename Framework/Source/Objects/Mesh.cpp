@@ -32,12 +32,13 @@ namespace fw {
         glVertexAttribPointer(loc, 2, GL_FLOAT, GL_FALSE, 8, (void*)0);
 
         {
+            
            int loc_x= glGetUniformLocation(pShader->GetProgram(), "vX");
            int loc_y = glGetUniformLocation(pShader->GetProgram(), "vY");
 
            glUniform1f(loc_x,x);
            glUniform1f(loc_y, y);
-
+           
         }
 
         // Draw the primitive.

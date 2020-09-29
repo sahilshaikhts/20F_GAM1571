@@ -1,13 +1,16 @@
 #pragma once
+#include "Math/Vector.h"
 namespace fw {
 
 	class Mesh;
 	class ShaderProgram;
 	class FrameWorkPCH;
-
+	class GameCore;
 	class GameObject
 	{
 	public:
+		vec2 position;
+		GameCore* core;
 		GameObject();
 		~GameObject();
 
@@ -16,8 +19,7 @@ namespace fw {
 		void SetMesh(Mesh* aMesh);
 		void SetShader(ShaderProgram* aShader);
 	private:
-		float x, y;
-		Mesh* mesh= nullptr;
-		ShaderProgram* shader= nullptr;
+		Mesh* mesh = nullptr;
+		ShaderProgram* shader = nullptr;
 	};
 }

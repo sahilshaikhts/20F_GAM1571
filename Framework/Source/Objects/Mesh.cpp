@@ -1,7 +1,8 @@
 #include "FrameworkPCH.h"
 #include "Mesh.h"
-#include "Vector2.h"
+#include "Math/Vector.h"
 #include "Utility/ShaderProgram.h"
+#include"Utility/Helpers.h"
 
 namespace fw {
 
@@ -16,7 +17,7 @@ namespace fw {
     }
 
     void Mesh::Draw(float x, float y, ShaderProgram* pShader)
-    {
+    { 
 
         glUseProgram(pShader->GetProgram());
 
@@ -29,6 +30,15 @@ namespace fw {
 
         // Describe the attributes in the VBO to OpenGL.
         glVertexAttribPointer(loc, 2, GL_FLOAT, GL_FALSE, 8, (void*)0);
+
+        {
+           int loc_x= glGetUniformLocation(pShader->GetProgram(), "vX");
+           int loc_y = glGetUniformLocation(pShader->GetProgram(), "vY");
+
+           glUniform1f(loc_x,x);
+           glUniform1f(loc_y, y);
+
+        }
 
         // Draw the primitive.
         glDrawArrays(m_PrimitiveType, 0, m_NumVertices);
@@ -55,9 +65,9 @@ namespace fw {
         }
     }
 
-    Vector2  Mesh::ConvertScreenToWorldPosition(Vector2 scrn_position)
+    vec2  Mesh::ConvertScreenToWorldPosition(vec2 scrn_position)
     {
-        Vector2 newPos;
+        vec2 newPos;
 
         //For x
         float pX;
@@ -101,7 +111,7 @@ namespace fw {
         GenerateMesh();
     }
 
-    void Mesh::AddVertex(Vector2 position)
+    void Mesh::AddVertex(vec2 position)
     {
 
         vertices.push_back(position.x);

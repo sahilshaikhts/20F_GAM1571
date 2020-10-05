@@ -80,6 +80,7 @@ bool FWCore::Init(int width, int height)
 
 int FWCore::Run(GameCore* pGame)
 {
+    
     // Main loop.
     MSG message;
     bool done = false;

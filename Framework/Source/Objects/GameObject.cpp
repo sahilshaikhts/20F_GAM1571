@@ -22,7 +22,7 @@ namespace fw {
 		mesh->Draw(position.x, position.y, shader);
 	}
 
-	void GameObject::Update()
+	void GameObject::Update(float deltaTime)
 	{
 		
 		

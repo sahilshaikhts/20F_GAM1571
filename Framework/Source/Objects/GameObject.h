@@ -13,11 +13,13 @@ namespace fw {
 		~GameObject();
 
 		void Draw();
-		void Update();
+		virtual void Update(float deltaTime);
 		void SetMesh(Mesh* aMesh);
 		void SetShader(ShaderProgram* aShader);
 	private:
-		Mesh* mesh = nullptr;
 		ShaderProgram* shader = nullptr;
+	protected:
+		Mesh* mesh = nullptr;
+
 	};
 }

@@ -4,8 +4,7 @@
 
 Game::Game(fw::FWCore* pFramework) :fw::GameCore(pFramework)
 {
-    player = new Player(pFramework);
-    
+    player = new Player(this);
 }
 
 
@@ -45,7 +44,7 @@ void Game::Init()
 void Game::Update(float deltaTime)
 {
     uiManager->StartFrame(deltaTime);
-    player->Update();
+    player->Update(deltaTime);
     ImGui::ShowDemoWindow();
 }
 

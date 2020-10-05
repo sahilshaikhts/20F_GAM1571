@@ -1,7 +1,15 @@
 #include "Framework.h"
+<<<<<<< HEAD
+=======
+
+>>>>>>> dbeebbdcdc4edd044416304e94b5b1661d12be33
 #include "Game.h"
 #include "Player.h"
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> dbeebbdcdc4edd044416304e94b5b1661d12be33
 Game::Game(fw::FWCore* pFramework) :fw::GameCore(pFramework)
 {
     player = new Player(this);
@@ -20,8 +28,11 @@ Game::~Game()
     }
     
     delete uiManager;
+<<<<<<< HEAD
 
     delete player;
+=======
+>>>>>>> dbeebbdcdc4edd044416304e94b5b1661d12be33
 
     for (fw::GameObject* obj : objects)
     {
@@ -44,8 +55,12 @@ void Game::Init()
 void Game::Update(float deltaTime)
 {
     uiManager->StartFrame(deltaTime);
+<<<<<<< HEAD
     player->Update(deltaTime);
     ImGui::ShowDemoWindow();
+=======
+    //ImGui::ShowDemoWindow();
+>>>>>>> dbeebbdcdc4edd044416304e94b5b1661d12be33
 }
 
 void Game::Draw()
@@ -53,6 +68,7 @@ void Game::Draw()
     glClearColor(0.6f, 0.96f, 0.26f, 1);
     glClear(GL_COLOR_BUFFER_BIT);
 
+<<<<<<< HEAD
     player->Draw();
     uiManager->EndFrame();
 }
@@ -61,6 +77,14 @@ void Game::SetVec2(float x,float y)
 {
     pos.x = x;
     pos.y = y;
+=======
+    for(auto obj : objects)
+    {
+        obj->Draw();
+    }
+
+    uiManager->EndFrame();
+>>>>>>> dbeebbdcdc4edd044416304e94b5b1661d12be33
 }
 
 void Game::Human()
@@ -211,7 +235,13 @@ void Game::Human()
 }
 
 void Game::Animal()
+<<<<<<< HEAD
 {    
+=======
+{
+    Vector2 pos;
+    
+>>>>>>> dbeebbdcdc4edd044416304e94b5b1661d12be33
     fw::Mesh* lMesh=new fw::Mesh();
     
     lMesh->SetDrawMode(4);
@@ -281,9 +311,16 @@ void Game::Animal()
 
 
     }
+<<<<<<< HEAD
 
     player->SetMesh(lMesh);
     player->SetShader(m_pShader);
+=======
+    fw::GameObject* h = new fw::GameObject();
+
+    h->SetMesh(lMesh);
+    h->SetShader(m_pShader);
+>>>>>>> dbeebbdcdc4edd044416304e94b5b1661d12be33
     
    // objects.push_back(h);
 }

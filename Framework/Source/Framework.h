@@ -16,7 +16,11 @@
 #include "Utility/Helpers.h"
 
 
+<<<<<<< HEAD
 #include "Math/Vector.h"
+=======
+#include "Vector2.h"
+>>>>>>> dbeebbdcdc4edd044416304e94b5b1661d12be33
 #include "Objects/Mesh.h"
 #include "Objects/GameObject.h"
 #include "UI/ImGuiManager.h"

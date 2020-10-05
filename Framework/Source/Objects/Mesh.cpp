@@ -1,8 +1,13 @@
 #include "FrameworkPCH.h"
 #include "Mesh.h"
+<<<<<<< HEAD:Framework/Source/Objects/Mesh.cpp
 #include "Math/Vector.h"
 #include "Utility/ShaderProgram.h"
 #include"Utility/Helpers.h"
+=======
+#include "Vector2.h"
+#include "Utility/ShaderProgram.h"
+>>>>>>> dbeebbdcdc4edd044416304e94b5b1661d12be33:Framework/Source/Mesh.cpp
 
 namespace fw {
 
@@ -17,7 +22,11 @@ namespace fw {
     }
 
     void Mesh::Draw(float x, float y, ShaderProgram* pShader)
+<<<<<<< HEAD:Framework/Source/Objects/Mesh.cpp
     { 
+=======
+    {
+>>>>>>> dbeebbdcdc4edd044416304e94b5b1661d12be33:Framework/Source/Mesh.cpp
 
         glUseProgram(pShader->GetProgram());
 
@@ -66,7 +75,11 @@ namespace fw {
         }
     }
 
+<<<<<<< HEAD:Framework/Source/Objects/Mesh.cpp
     vec2  Mesh::ConvertScreenToWorldPosition(vec2 scrn_position)
+=======
+    Vector2  Mesh::ConvertScreenToWorldPosition(Vector2 scrn_position)
+>>>>>>> dbeebbdcdc4edd044416304e94b5b1661d12be33:Framework/Source/Mesh.cpp
     {
         vec2 newPos;
 

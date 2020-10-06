@@ -44,20 +44,11 @@ files
 {
 	"Framework/Source/**.cpp",
 	"Framework/Source/**.h",
-<<<<<<< HEAD
 	"Framework/Libraries/imgui/*cpp",
 	"Framework/Libraries/imgui/*.h",	
-=======
-	"Framework/Libraries/iamgui/*cpp",
-	"Framework/Libraries/iamgui/*.h",	
->>>>>>> dbeebbdcdc4edd044416304e94b5b1661d12be33
 }
 
 includedirs
 {
 	"Framework/Source",
-<<<<<<< HEAD
-=======
-	"Framework/Libraries",
->>>>>>> dbeebbdcdc4edd044416304e94b5b1661d12be33
 }

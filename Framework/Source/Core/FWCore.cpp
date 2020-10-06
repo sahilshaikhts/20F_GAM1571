@@ -8,13 +8,11 @@
 // 3. This notice may not be removed or altered from any source distribution.
 
 #include "FrameworkPCH.h"
-#include "Utility/Helpers.h"
 
 #include "FWCore.h"
 #include "GL/GLExtensions.h"
 #include "GL/WGLExtensions.h"
 #include "GL/MyGLContext.h"
-
 #include "GameCore.h"
 #include "Utility/Helpers.h"
 
@@ -109,11 +107,7 @@ int FWCore::Run(GameCore* pGame)
             double deltaTime = currentTime - previousTime;
             previousTime = currentTime;
 
-<<<<<<< HEAD:Framework/Source/Core/FWCore.cpp
             pGame->Update( (float)deltaTime );
-=======
-            pGame->Update((float)deltaTime);
->>>>>>> dbeebbdcdc4edd044416304e94b5b1661d12be33:Framework/Source/FWCore.cpp
             pGame->Draw();
 
             SwapBuffers();

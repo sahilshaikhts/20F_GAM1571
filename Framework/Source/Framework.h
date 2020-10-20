@@ -7,18 +7,18 @@
 // It should not be included by any files inside the framework project.
 
 #include "FrameworkPCH.h"
+
 #include "../Libraries/imgui/imgui.h"
 
-
-#include "Core/FWCore.h"
 #include "Core/GameCore.h"
-#include "Utility/ShaderProgram.h"
-#include "Utility/Helpers.h"
-
-
+#include "Core/FWCore.h"
+#include "EventSystem/Event.h"
+#include "EventSystem/EventManager.h"
 #include "Math/Vector.h"
-#include "Objects/Mesh.h"
 #include "Objects/GameObject.h"
+#include "Objects/Mesh.h"
 #include "UI/ImGuiManager.h"
+#include "Utility/Helpers.h"
+#include "Utility/ShaderProgram.h"
 
 #endif //__Framework_H__

@@ -1,289 +1,138 @@
-#include "Framework.h"
+#include "GamePCH.h"
+
 #include "Game.h"
-#include "Player.h"
+#include "Objects/Player.h"
+#include "Objects/PlayerController.h"
+#include "Objects/Shapes.h"
+#include "Events/GameEvents.h"
 
-Game::Game(fw::FWCore* pFramework) :fw::GameCore(pFramework)
+Game::Game(fw::FWCore* pFramework) : fw::GameCore( pFramework )
 {
-    player = new Player(this);
+    wglSwapInterval( m_VSyncEnabled ? 1 : 0 );
 }
-
 
 Game::~Game()
 {
-    if (m_pShader != nullptr) {
-        delete m_pShader;
-        m_pShader = nullptr;
-    }
-    if (m_pMesh != nullptr) {
-        delete m_pMesh;
-        m_pMesh = nullptr;
-    }
-    
-    delete uiManager;
+    delete m_pShader;
+    delete m_pMeshHuman;
+    delete m_pMeshEnemy;
+    delete m_pMeshTest;
 
-    delete player;
-
-    for (fw::GameObject* obj : objects)
+    for( fw::GameObject* pObject : m_Objects )
     {
-        delete obj;
+        delete pObject;
     }
+
+    delete m_pPlayerController;
+
+    delete m_pEventManager;
+    delete m_pImGuiManager;
 }
 
 void Game::Init()
 {
-    uiManager = new fw::ImGuiManager(m_pFramework);
+    m_pImGuiManager = new fw::ImGuiManager( m_pFramework );
+    m_pImGuiManager->Init();
 
-    uiManager->Init();
+    m_pEventManager = new fw::EventManager();
 
-    m_pShader = new fw::ShaderProgram("Data/Basic.vert", "Data/Basic.frag");
-    m_pMesh = new fw::Mesh();
-    Human();
-    Animal();
+    // Load some shaders.
+    m_pShader = new fw::ShaderProgram( "Data/Basic.vert", "Data/Basic.frag" );
+
+    // Create some meshes.
+    m_pMeshHuman = new fw::Mesh( meshPrimType_Human, meshNumVerts_Human, meshAttribs_Human );
+    m_pMeshEnemy = new fw::Mesh( meshPrimType_Enemy, meshNumVerts_Enemy, meshAttribs_Enemy );
+
+    m_pMeshTest = new fw::Mesh();
+
+    int numPoints = 3;
+    {
+        //float arr[numPoints*2] = { 0 }; //{ 0,0,   1,0,   2,0 };
+        //float* arr = new float[numPoints*2];
+        std::vector<float> arr;
+
+        for( int i=0; i<numPoints*2; i++ )
+            arr.push_back( 0 );
+
+        for( int i=0; i<numPoints; i++ )
+        {
+            arr[i*2] = (float)i;
+        }
+        
+        m_pMeshTest->CreateShape( GL_POINTS, numPoints, &arr[0] );
+    }
+
+    m_pPlayerController = new PlayerController();
+    
+    m_Arena = new fw::Mesh();
+    m_Arena->CreateCircle(5, vertices, true);
+
+    fw::Mesh* meshPlayer=new fw::Mesh();
+    meshPlayer->CreateCircle(.5f, vertices, true);
+
+    // Create some GameObjects.
+    m_Objects.push_back( new Player( this, m_pPlayerController, "Player", vec2( 6, 5 ), meshPlayer, m_pShader, vec4::Blue() ) );
+    m_Objects.push_back(new fw::GameObject(this, "GO", vec2(5, 5), m_Arena, m_pShader, vec4::Green()));
+
+
+    }
+
+void Game::OnEvent(fw::Event* pEvent)
+{
+    m_pPlayerController->OnEvent( pEvent );
+
+    if( pEvent->GetType() == RemoveFromGameEvent::GetStaticEventType() )
+    {
+        RemoveFromGameEvent* pRemoveFromGameEvent = static_cast<RemoveFromGameEvent*>( pEvent );
+        fw::GameObject* pObject = pRemoveFromGameEvent->GetGameObject();
+
+        auto it = std::find( m_Objects.begin(), m_Objects.end(), pObject );
+        m_Objects.erase( it );
+
+        delete pObject;
+    }
 }
 
 void Game::Update(float deltaTime)
 {
-    uiManager->StartFrame(deltaTime);
-    player->Update(deltaTime);
+    // Process our events.
+    m_pEventManager->DispatchAllEvents( this );
+
+    m_pImGuiManager->StartFrame( deltaTime );
     ImGui::ShowDemoWindow();
+
+    m_Arena->CreateCircle(5, vertices, false);
+
+    for( auto it = m_Objects.begin(); it != m_Objects.end(); it++ )
+    {
+        fw::GameObject* pObject = *it;
+
+        pObject->Update( deltaTime );
+    }
+
+    // Debug imgui stuff.
+    {
+        if( ImGui::Checkbox( "VSync", &m_VSyncEnabled ) )
+        {
+            wglSwapInterval( m_VSyncEnabled ? 1 : 0 );
+        }
+        ImGui::DragInt("Vertices", &vertices, 1, 3, 100);
+    }
 }
 
 void Game::Draw()
 {
-    glClearColor(0.6f, 0.96f, 0.26f, 1);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClearColor( 0, 0, 0.2f, 0 );
+    glClear( GL_COLOR_BUFFER_BIT );
 
-    player->Draw();
-    uiManager->EndFrame();
-}
-
-void Game::SetVec2(float x,float y)
-{
-    pos.x = x;
-    pos.y = y;
-}
-
-void Game::Human()
-{
-    m_pMesh->SetDrawMode(4);
-
-    //Hair
-    {
-        SetVec2(120, 580);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(160, 570);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(163, 553);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(120, 580);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(125, 565);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(163, 553);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-    }
-    //Face
-    {
-        SetVec2(125, 565);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(163, 553);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(120, 525);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(170, 525);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(163, 553);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-    }
-    //Torso
-    {
-        SetVec2(120, 522);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(170, 522);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(190, 385);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(120, 522);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(100, 385);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(190, 385);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-    }
-    //LEGS
-    {   SetVec2(100, 385);
-    m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-    SetVec2(90, 225);
-    m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-    SetVec2(145, 385);
-    m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-    SetVec2(190, 385);
-    m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-    SetVec2(200, 225);
-    m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-    SetVec2(145, 385);
-    m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-    }
-    //ARM LEFT
-    {
-        SetVec2(120, 522);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(80, 490);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(50, 400);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(120, 522);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(120, 460);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(50, 400);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(50, 400);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(100, 385);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(80, 440);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-    }
-    //ARM RIGHT
-    {
-        SetVec2(170, 522);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(210, 490);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(240, 400);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(170, 522);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(170, 460);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(240, 400);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(240, 400);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(190, 385);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(210, 440);
-        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
-    }
-
-    fw::GameObject* h=new fw::GameObject();
-    h->SetMesh(m_pMesh);
-    h->SetShader(m_pShader);
-    objects.push_back(h);
-}
-
-void Game::Animal()
-{    
-    fw::Mesh* lMesh=new fw::Mesh();
+    glPointSize( 10 );
     
-    lMesh->SetDrawMode(4);
-    //HEAD
+    for( auto it = m_Objects.begin(); it != m_Objects.end(); it++ )
     {
-        SetVec2(560, 320);
-        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
+        fw::GameObject* pObject = *it;
 
-        SetVec2(500, 360);
-        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(500, 320);
-        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(500, 360);
-        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(500, 390);
-        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(520, 330);
-        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
+        pObject->Draw();
     }
 
-    //BODY
-    {
-        SetVec2(500, 280);
-        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(400, 290);
-        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(500, 340);
-        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(400, 290);
-        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(400, 320);
-        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(500, 340);
-        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
-
-    }
-
-    //Legs
-    {
-        SetVec2(400, 320);
-        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(380, 300);
-        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(400, 200);
-        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
-
-
-        SetVec2(500, 280);
-        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
-        
-        SetVec2(470, 210);
-        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
-
-        SetVec2(470, 290);
-        lMesh->AddVertex(lMesh->ConvertScreenToWorldPosition(pos));
-
-
-    }
-
-    player->SetMesh(lMesh);
-    player->SetShader(m_pShader);
-    
-   // objects.push_back(h);
+    m_pImGuiManager->EndFrame();
 }

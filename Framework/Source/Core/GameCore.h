@@ -1,9 +1,9 @@
 #pragma once
 
 namespace fw {
+    class Event;
+    class EventManager;
 
-class Event;
-class EventManager;
 class FWCore;
 
 class GameCore
@@ -15,14 +15,16 @@ public:
     virtual void OnEvent(Event* pEvent) = 0;
     virtual void Update(float deltaTime) = 0;
     virtual void Draw() = 0;
-
-    FWCore* GetFramework() { return m_pFramework; }
-    EventManager* GetEventManager() { return m_pEventManager; }
+  
+    FWCore* GetFrameWork()
+    {
+        return m_pFramework;
+    }
 
 protected:
-    FWCore* m_pFramework = nullptr;
+    FWCore* m_pFramework;
 
-    EventManager* m_pEventManager = nullptr;
+
 };
 
 } // namespace fw

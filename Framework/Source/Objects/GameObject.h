@@ -1,34 +1,29 @@
 #pragma once
-
 #include "Math/Vector.h"
-
 namespace fw {
 
-class Mesh;
-class ShaderProgram;
-class GameCore;
+	class Mesh;
+	class ShaderProgram;
+	class GameCore;
 
-class GameObject
-{
-public:
-    GameObject(GameCore* pGameCore, std::string name, vec2 pos, Mesh* pMesh, ShaderProgram* pShader, vec4 color);
-    virtual ~GameObject();
+	class GameObject
+	{
+	public:
+		vec2 position;
+		vec4 color;
+		GameObject(GameCore* aCore, std::string aName, vec4 aColor);
+		~GameObject();
 
-    virtual void Update(float deltaTime);
-    virtual void Draw();
-
-    std::string GetName() { return m_Name; }
-
-protected:
-    GameCore* m_pGameCore = nullptr;
-
-    std::string m_Name;
-
-    vec2 m_Position;
-
-    Mesh* m_pMesh = nullptr;
-    ShaderProgram* m_pShader = nullptr;
-    vec4 m_Color = vec4(1,1,1,1);
-};
-
-} // namespace fw
+		void Draw();
+		virtual void Update(float deltaTime);
+		void SetMesh(Mesh* aMesh);
+		void SetShader(ShaderProgram* aShader);
+		std::string GetName();
+	private:
+		ShaderProgram* shader = nullptr;
+	protected:
+		Mesh* mesh = nullptr;
+		GameCore* m_Core = nullptr;
+		std::string m_name;
+	};
+}

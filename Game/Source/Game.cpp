@@ -1,138 +1,265 @@
 #include "GamePCH.h"
-
 #include "Game.h"
 #include "Objects/Player.h"
-#include "Objects/PlayerController.h"
-#include "Objects/Shapes.h"
+#include "Objects/Shape.h"
 #include "Events/GameEvents.h"
-
-Game::Game(fw::FWCore* pFramework) : fw::GameCore( pFramework )
+Game::Game(fw::FWCore* pFramework) :fw::GameCore(pFramework)
 {
-    wglSwapInterval( m_VSyncEnabled ? 1 : 0 );
 }
+
 
 Game::~Game()
 {
-    delete m_pShader;
-    delete m_pMeshHuman;
-    delete m_pMeshEnemy;
-    delete m_pMeshTest;
-
-    for( fw::GameObject* pObject : m_Objects )
-    {
-        delete pObject;
+    if (m_pShader != nullptr) {
+        delete m_pShader;
+        m_pShader = nullptr;
     }
+    if (m_pMesh != nullptr) {
+        delete m_pMesh;
+        m_pMesh = nullptr;
+    }
+    
+    delete uiManager;
 
-    delete m_pPlayerController;
 
-    delete m_pEventManager;
-    delete m_pImGuiManager;
+    for (fw::GameObject* obj : objects)
+    {
+        delete obj;
+    } 
 }
 
 void Game::Init()
 {
-    m_pImGuiManager = new fw::ImGuiManager( m_pFramework );
-    m_pImGuiManager->Init();
-
+    uiManager = new fw::ImGuiManager(m_pFramework);
+    uiManager->Init();
     m_pEventManager = new fw::EventManager();
 
-    // Load some shaders.
-    m_pShader = new fw::ShaderProgram( "Data/Basic.vert", "Data/Basic.frag" );
-
-    // Create some meshes.
-    m_pMeshHuman = new fw::Mesh( meshPrimType_Human, meshNumVerts_Human, meshAttribs_Human );
-    m_pMeshEnemy = new fw::Mesh( meshPrimType_Enemy, meshNumVerts_Enemy, meshAttribs_Enemy );
-
-    m_pMeshTest = new fw::Mesh();
-
-    int numPoints = 3;
-    {
-        //float arr[numPoints*2] = { 0 }; //{ 0,0,   1,0,   2,0 };
-        //float* arr = new float[numPoints*2];
-        std::vector<float> arr;
-
-        for( int i=0; i<numPoints*2; i++ )
-            arr.push_back( 0 );
-
-        for( int i=0; i<numPoints; i++ )
-        {
-            arr[i*2] = (float)i;
-        }
-        
-        m_pMeshTest->CreateShape( GL_POINTS, numPoints, &arr[0] );
-    }
-
-    m_pPlayerController = new PlayerController();
+    m_pShader = new fw::ShaderProgram("Data/Basic.vert", "Data/Basic.frag");
+    m_pMesh = new fw::Mesh();
+    fw::Mesh* m = new fw::Mesh();
     
-    m_Arena = new fw::Mesh();
-    m_Arena->CreateCircle(5, vertices, true);
-
-    fw::Mesh* meshPlayer=new fw::Mesh();
-    meshPlayer->CreateCircle(.5f, vertices, true);
-
-    // Create some GameObjects.
-    m_Objects.push_back( new Player( this, m_pPlayerController, "Player", vec2( 6, 5 ), meshPlayer, m_pShader, vec4::Blue() ) );
-    m_Objects.push_back(new fw::GameObject(this, "GO", vec2(5, 5), m_Arena, m_pShader, vec4::Green()));
-
-
-    }
-
-void Game::OnEvent(fw::Event* pEvent)
-{
-    m_pPlayerController->OnEvent( pEvent );
-
-    if( pEvent->GetType() == RemoveFromGameEvent::GetStaticEventType() )
-    {
-        RemoveFromGameEvent* pRemoveFromGameEvent = static_cast<RemoveFromGameEvent*>( pEvent );
-        fw::GameObject* pObject = pRemoveFromGameEvent->GetGameObject();
-
-        auto it = std::find( m_Objects.begin(), m_Objects.end(), pObject );
-        m_Objects.erase( it );
-
-        delete pObject;
-    }
-}
+    m->CreateCircle(20, 8);
+    fw::GameObject* obj = new fw::GameObject(*this);
+    obj->SetMesh(m);
+    obj->SetShader(m_pShader);
+    obj->position = vec2(5, 5);
+    obj->color = vec4(1, 0, 0, 1);
+    objects.push_back(obj);
+    
+   }
 
 void Game::Update(float deltaTime)
 {
-    // Process our events.
-    m_pEventManager->DispatchAllEvents( this );
-
-    m_pImGuiManager->StartFrame( deltaTime );
+    m_pEventManager->DispatchAllEvents(this);
+    uiManager->StartFrame(deltaTime);
     ImGui::ShowDemoWindow();
-
-    m_Arena->CreateCircle(5, vertices, false);
-
-    for( auto it = m_Objects.begin(); it != m_Objects.end(); it++ )
+    
+    for (auto it = objects.begin(); it != objects.end(); it++)
     {
-        fw::GameObject* pObject = *it;
+        fw::GameObject* obj = *it;
 
-        pObject->Update( deltaTime );
-    }
+        obj->Update(deltaTime);
 
-    // Debug imgui stuff.
-    {
-        if( ImGui::Checkbox( "VSync", &m_VSyncEnabled ) )
+        ImGui::PushID(obj);
+        ImGui::Text("Name: %s", obj->GetName().c_str());
+        ImGui::SameLine();
+        if (ImGui::Button("Delete"))
         {
-            wglSwapInterval( m_VSyncEnabled ? 1 : 0 );
+            m_pEventManager->AddEvent(new RemoveFromGameEvent(obj));
         }
-        ImGui::DragInt("Vertices", &vertices, 1, 3, 100);
+        ImGui::PopID();
     }
+
+    ImGui::Checkbox("V-Sync", &v);
+    wglSwapInterval(v? 1 : 0);
+
 }
 
 void Game::Draw()
 {
-    glClearColor( 0, 0, 0.2f, 0 );
-    glClear( GL_COLOR_BUFFER_BIT );
+    glClearColor(0.6f, 0.96f, 0.26f, 1);
+    glClear(GL_COLOR_BUFFER_BIT);
 
-    glPointSize( 10 );
-    
-    for( auto it = m_Objects.begin(); it != m_Objects.end(); it++ )
+    for (auto obj : objects)
     {
-        fw::GameObject* pObject = *it;
-
-        pObject->Draw();
+        obj->Draw();
     }
 
-    m_pImGuiManager->EndFrame();
+    uiManager->EndFrame();
+}
+
+void Game::OnEvent(fw::Event* pEvent)
+{
+    if (pEvent->GetType() == RemoveFromGameEvent::GetStaticEventType())
+    {
+        RemoveFromGameEvent* removeEvent = static_cast<RemoveFromGameEvent*>(pEvent);
+        fw::GameObject* target = removeEvent->GetObject();
+        auto it = std::find(objects.begin(), objects.end(), target);
+        objects.erase(it);
+
+        delete target;
+    }
+}
+
+
+
+void Game::Human()
+{
+    m_pMesh->SetDrawMode(4);
+
+   /* //Hair
+    {
+        pos.Set(120, 580);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(160, 570);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(163, 553);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(120, 580);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(125, 565);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(163, 553);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+    }
+    //Face
+    {
+        pos.Set(125, 565);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(163, 553);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(120, 525);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(170, 525);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(163, 553);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+    }
+    //Torso
+    {
+        pos.Set(120, 522);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(170, 522);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(190, 385);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(120, 522);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(100, 385);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(190, 385);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+    }
+    //LEGS
+    {   pos.Set(100, 385);
+    m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+    pos.Set(90, 225);
+    m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+    pos.Set(145, 385);
+    m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+    pos.Set(190, 385);
+    m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+    pos.Set(200, 225);
+    m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+    pos.Set(145, 385);
+    m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+    }
+    //ARM LEFT
+    {
+        pos.Set(120, 522);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(80, 490);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(50, 400);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(120, 522);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(120, 460);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(50, 400);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(50, 400);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(100, 385);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(80, 440);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+    }
+    //ARM RIGHT
+    {
+        pos.Set(170, 522);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(210, 490);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(240, 400);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(170, 522);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(170, 460);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(240, 400);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(240, 400);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(190, 385);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+
+        pos.Set(210, 440);
+        m_pMesh->AddVertex(m_pMesh->ConvertScreenToWorldPosition(pos));
+    }
+
+    fw::GameObject* h=new fw::GameObject();
+    h->SetMesh(m_pMesh);
+    h->SetShader(m_pShader);
+    objects.push_back(h);*/
+}
+
+void Game::Animal()
+{    
+    fw::Mesh* lMesh=new fw::Mesh();
+    
+    lMesh->SetDrawMode(GL_TRIANGLE_FAN);
+    vec4 g;
+    Player* pl = new Player(this, "Triangle",g.DarkGreen());
+    lMesh->CreateCircle(360, 2);
+
+    pl->SetMesh(lMesh);
+    pl->SetShader(m_pShader);
+    objects.push_back(pl);
 }

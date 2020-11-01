@@ -1,53 +1,47 @@
 #include "GamePCH.h"
+#include"Player.h"
+#include"Game.h"
 
-#include "Objects/Player.h"
-#include "Objects/PlayerController.h"
-#include "Game.h"
-
-Player::Player(fw::GameCore* pGameCore, PlayerController* pPlayerController, std::string name, vec2 pos, fw::Mesh* pMesh, fw::ShaderProgram* pShader, vec4 color)
-    : fw::GameObject( pGameCore, name, pos, pMesh, pShader, color )
-    , m_pPlayerController( pPlayerController )
+Player::Player(fw::GameCore* aCore, std::string aName,vec4 aColor) :fw::GameObject(aName)
 {
-}
+	if (aCore != nullptr)
+		frameWork = aCore->GetFrameWork();
+	
+	color = aColor;
+	speed = 5;
+	position +=vec2(1, 1);
 
-Player::~Player()
-{
 }
-
 void Player::Update(float deltaTime)
 {
-    float speed = 2.0f;
+	ImGui::InputFloat("PosX", &position.x, 0.1f, 1.0f, "%.3f");
+	ImGui::InputFloat("PosY", &position.y, 0.1f, 1.0f, "%.3f");
+	vec2 dir(0, 0);
+	if (frameWork->IsKeyDown('d') || frameWork->IsKeyDown('D'))
+	{
+		dir.x = 1;
+	}
 
-    vec2 dir;
+	if (frameWork->IsKeyDown('a') || frameWork->IsKeyDown('A'))
+	{
+		dir.x = -1;
+	}
 
-    if( m_pPlayerController->IsUpHeld() )
-    {
-        dir.y = 1;
-    }
-    if( m_pGameCore->GetFramework()->IsKeyDown( 'S' ) )
-    {
-        dir.y = -1;
-    }
-    if( m_pPlayerController->IsLeftHeld() )
-    {
-        dir.x = -1;
-    }
-    if( m_pPlayerController->IsRightHeld() )
-    {
-        dir.x = 1;
-    }
+	if (frameWork->IsKeyDown('w') || frameWork->IsKeyDown('W'))
+	{
+		dir.y = 1;
+	}
 
-    m_Position += dir * speed * deltaTime;
+	if (frameWork->IsKeyDown('s') || frameWork->IsKeyDown('S'))
+	{
+		dir.y = -1;
+	}
 
-    // Deal with collision with the environment.
-    {
-        // Query Game for environment limits.
-        //static_cast<Game*>( m_pGameCore )->
+	position += dir * speed * deltaTime;
 
-        // Apply those limits.
-        if( m_Position.x > 8 )
-        {
-            m_Position.x = 8;
-        }
-    }
+	//static_cast<Game>(frameWork)
 }
+
+
+
+

@@ -1,19 +1,18 @@
-#pragma once
-
-class RemoveFromGameEvent : public fw::Event
+#include"Framework.h"
+class RemoveFromGameEvent :public fw::Event
 {
+
 public:
-    RemoveFromGameEvent(fw::GameObject* pObject)
-    {
-        m_pObject = pObject;
-    }
-    virtual ~RemoveFromGameEvent() {}
+	
+	RemoveFromGameEvent(fw::GameObject* obj) { object = obj; eventType="RemoveFromGameEvent"; }
+	virtual ~RemoveFromGameEvent(){}
 
-    static const char* GetStaticEventType() { return "RemoveFromGameEvent"; }
-    virtual const char* GetType() override { return GetStaticEventType(); }
+	static const char* GetStaticEventType() { return "RemoveFromGameEvent"; }
+	virtual const char* GetType() override { return GetStaticEventType(); }
 
-    fw::GameObject* GetGameObject() { return m_pObject; }
+	fw::GameObject* GetObject() { return object; }
 
-protected:
-    fw::GameObject* m_pObject;
+private:
+	fw::GameObject* object=nullptr;
+
 };

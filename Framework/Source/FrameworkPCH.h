@@ -16,11 +16,11 @@
 #include <malloc.h>
 #include <memory.h>
 #include <math.h>
+#include<string>
 
 #include <map>
 #include <vector>
 #include <queue>
-#include <string>
 
 #include <GL/GL.h>
 #include "GL/glext.h"

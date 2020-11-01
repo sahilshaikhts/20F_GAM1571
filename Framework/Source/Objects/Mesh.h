@@ -1,31 +1,33 @@
 #pragma once
-
 #include "Math/Vector.h"
-
 namespace fw {
+    class ShaderProgram;
 
-class ShaderProgram;
+    class Mesh
+    {
+    public:
+        Mesh();
+        virtual ~Mesh();
+        void Mesh::Draw(float x, float y, ShaderProgram* pShader, vec4 color);
 
-class Mesh
-{
-public:
-    Mesh();
-    Mesh(int primitiveType, int numVertices, const float* pVertices);
-    virtual ~Mesh();
+        void AddVertex(float aX, float aY);
+        void AddVertex(vec2 position);
 
-    void CreateShape(int primitiveType, int numVertices, const float* pVertices);
-    void CreateCircle(float radius,int numVertices,bool isFilled);
-    void SetUniform1f(ShaderProgram* pShader, char* name, float value);
-    void SetUniform2f(ShaderProgram* pShader, char* name, vec2 value);
-    void SetUniform4f(ShaderProgram* pShader, char* name, vec4 value);
+        void SetUniform1f(ShaderProgram* pShader, char* name, float value);
+        void SetUniform2f(ShaderProgram* pShader, char* name, vec2 value);
+        void SetUniform4f(ShaderProgram* pShader, char* name, vec4 value);
 
-    void Draw(vec2 pos, ShaderProgram* pShader, vec4 color);
+        void SetDrawMode(int mode);
+       
+        void GenerateMesh();
+        void CreateCircle(unsigned int numSegments,float radius);
+    protected:
+        GLuint m_VBO = 0;
 
-protected:
-    GLuint m_VBO = 0;
+        int m_NumVertices = 0;
+        int m_PrimitiveType = GL_POINTS;
+        std::vector<float> vertices;
+        
+    };
 
-    int m_NumVertices = 0;
-    int m_PrimitiveType = GL_POINTS;
-};
-
-} // namespace fw
+}

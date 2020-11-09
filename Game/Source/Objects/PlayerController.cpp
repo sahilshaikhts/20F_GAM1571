@@ -8,31 +8,42 @@ PlayerController::PlayerController()
 
 PlayerController::~PlayerController()
 {
+
+}
+
+void PlayerController::StartFrame()
+{
+	m_oldFlags = m_flags;
 }
 
 void PlayerController::OnEvent(fw::Event* pEvent)
 {
-    if( pEvent->GetType() == fw::InputEvent::GetStaticEventType() )
-    {
-        fw::InputEvent* pInputEvent = static_cast<fw::InputEvent*>( pEvent );
-        
-        if( pInputEvent->GetDeviceType() == fw::InputEvent::DeviceType::Keyboard )
-        {
-            if( pInputEvent->GetDeviceState() == fw::InputEvent::DeviceState::Pressed )
-            {
-                if( pInputEvent->GetKeyCode() == 'W' ) { m_Up = true; }
-                if( pInputEvent->GetKeyCode() == 'S' ) { m_Down = true; }
-                if( pInputEvent->GetKeyCode() == 'A' ) { m_Left = true; }
-                if( pInputEvent->GetKeyCode() == 'D' ) { m_Right = true; }
-            }
+	fw::InputEvent* inputEvent = static_cast<fw::InputEvent*>(pEvent);
 
-            if( pInputEvent->GetDeviceState() == fw::InputEvent::DeviceState::Released )
-            {
-                if( pInputEvent->GetKeyCode() == 'W' ) { m_Up = false; }
-                if( pInputEvent->GetKeyCode() == 'S' ) { m_Down = false; }
-                if( pInputEvent->GetKeyCode() == 'A' ) { m_Left = false; }
-                if( pInputEvent->GetKeyCode() == 'D' ) { m_Right = false; }
-            }
-        }
-    }
+	if (inputEvent->GetDeviceType() == fw::InputEvent::InputDevice::keyboard)
+	{
+		if (inputEvent->GetDeviceState() == fw::InputEvent::DeviceState::pressed) {
+			if (inputEvent->GetKeyCode() == 'W')
+				m_flags|=Up;
+			if (inputEvent->GetKeyCode() == 'S')
+				m_flags |= Down;
+			if (inputEvent->GetKeyCode() == 'A')
+				m_flags|=Left;
+			if (inputEvent->GetKeyCode() == 'D')
+				m_flags |= Right;
+		}
+	
+	
+		if (inputEvent->GetDeviceState() == fw::InputEvent::DeviceState::released) {
+			if (inputEvent->GetKeyCode() == 'W')
+				m_flags &= ~Up;
+			if (inputEvent->GetKeyCode() == 'S')
+				m_flags &= ~Down;
+			if (inputEvent->GetKeyCode() == 'A')
+				m_flags &= ~Left;
+			if (inputEvent->GetKeyCode() == 'D')
+				m_flags &= ~Right;
+		}
+
+	}
 }

@@ -3,19 +3,24 @@
 class PlayerController
 {
 public:
+    enum Mask {
+        Up = 1,
+        Down = 2,
+        Left = 4,
+        Right = 8,
+    };
     PlayerController();
     virtual ~PlayerController();
 
+    void StartFrame();
     void OnEvent(fw::Event* pEvent);
 
-    bool IsUpHeld()     { return m_Up; }
-    bool IsDownHeld()   { return m_Down; }
-    bool IsLeftHeld()   { return m_Left; }
-    bool IsRightHeld()  { return m_Right; }
+    bool IsHeld(Mask dir)     { return (m_flags&dir)!=0; }
+
+    bool WasPressed(Mask dir) { return((m_oldFlags & dir != 0) && (m_flags & dir == 0)); }
+    bool WasReleased(Mask dir) { return((m_oldFlags & dir != 0) && (m_flags & dir == 0)); }
 
 protected:
-    bool m_Up = false;
-    bool m_Down = false;
-    bool m_Left = false;
-    bool m_Right = false;
+    unsigned int m_flags = 0;
+    unsigned int m_oldFlags = 0;
 };

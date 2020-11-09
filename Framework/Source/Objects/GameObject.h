@@ -11,11 +11,14 @@ namespace fw {
 	public:
 		vec2 position;
 		vec4 color;
+		GameObject();
 		GameObject(GameCore* aCore, std::string aName, vec4 aColor);
 		~GameObject();
 
 		void Draw();
 		virtual void Update(float deltaTime);
+		virtual void OnCollision(GameObject* other);
+
 		void SetMesh(Mesh* aMesh);
 		void SetShader(ShaderProgram* aShader);
 		std::string GetName();

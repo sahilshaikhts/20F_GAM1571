@@ -4,6 +4,7 @@
 #include "Mesh.h"
 
 namespace fw {
+	GameObject::GameObject(){}
 	GameObject::GameObject(GameCore* aCore, std::string aName, vec4 aColor)
 	{
 		position.x = 0;

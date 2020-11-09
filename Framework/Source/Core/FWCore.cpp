@@ -29,6 +29,7 @@ namespace fw {
 
 FWCore::FWCore()
 {
+    m_game = nullptr;
     m_EscapeKeyWillQuit = true;
 
     m_WindowWidth = -1;
@@ -86,6 +87,7 @@ int FWCore::Run(GameCore* pGame)
     // Main loop.
     MSG message;
     bool done = false;
+    m_game = pGame;//GAMECORE
 
     double previousTime = GetSystemTimeSinceGameStart();
 
@@ -109,6 +111,7 @@ int FWCore::Run(GameCore* pGame)
             double deltaTime = currentTime - previousTime;
             previousTime = currentTime;
 
+            pGame->StartFrame((float)deltaTime);
             pGame->Update( (float)deltaTime );
             pGame->Draw();
 
@@ -443,19 +446,26 @@ LRESULT CALLBACK FWCore::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
         {
             bool keyWasPressedLastTimeMessageArrived = lParam & (1 << 30);
 
-            if( keyWasPressedLastTimeMessageArrived == false )
+            if (keyWasPressedLastTimeMessageArrived == false)
             {
-                if( wParam == VK_ESCAPE && pFWCore->m_EscapeKeyWillQuit )
-                    PostQuitMessage( 0 );
+                if (wParam == VK_ESCAPE && pFWCore->m_EscapeKeyWillQuit)
+                    PostQuitMessage(0);
 
                 pFWCore->m_KeyStates[wParam] = true;
+
+                InputEvent* event = new InputEvent(InputEvent::InputDevice::keyboard, InputEvent::DeviceState::pressed, wParam);
+
+                pFWCore->m_game->GetEventManager()->AddEvent(event);
             }
-        }
+        }   
         return 0;
 
     case WM_KEYUP:
         {
             pFWCore->m_KeyStates[wParam] = false;
+            InputEvent* event = new InputEvent(InputEvent::InputDevice::keyboard, InputEvent::DeviceState::released, wParam);
+
+            pFWCore->m_game->GetEventManager()->AddEvent(event);
         }
         return 0;
 

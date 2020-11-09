@@ -1,45 +1,53 @@
-#include "GamePCH.h"
+	#include "GamePCH.h"
 #include"Player.h"
-#include"Game.h"
-
-Player::Player(fw::GameCore* aCore, std::string aName,vec4 aColor) :fw::GameObject(aName)
+#include "Objects/PlayerController.h"
+Player::Player(fw::GameCore* aCore,PlayerController* controller, std::string aName, vec4 aColor) :fw::GameObject(aCore, aName, aColor)
 {
-	if (aCore != nullptr)
-		frameWork = aCore->GetFrameWork();
-	
-	color = aColor;
 	speed = 5;
-	position +=vec2(1, 1);
-
+	position += vec2(1, 1);
+	frameWork = aCore->GetFrameWork();
+	m_controller = controller;
 }
+
 void Player::Update(float deltaTime)
 {
-	ImGui::InputFloat("PosX", &position.x, 0.1f, 1.0f, "%.3f");
-	ImGui::InputFloat("PosY", &position.y, 0.1f, 1.0f, "%.3f");
-	vec2 dir(0, 0);
-	if (frameWork->IsKeyDown('d') || frameWork->IsKeyDown('D'))
+	if (inputEnabled)
 	{
-		dir.x = 1;
+		vec2 dir(0, 0);
+
+		if (m_controller->IsHeld(PlayerController::Mask::Right))
+		{
+			dir.x = 1;
+		}
+
+		if (m_controller->IsHeld(PlayerController::Mask::Left))
+		{
+			dir.x = -1;
+		}
+
+		if (m_controller->IsHeld(PlayerController::Mask::Up))
+		{
+			dir.y = 1;
+		}
+
+		if (m_controller->IsHeld(PlayerController::Mask::Down))
+		{
+			dir.y = -1;
+		}
+
+		position += dir * speed * deltaTime;
 	}
 
-	if (frameWork->IsKeyDown('a') || frameWork->IsKeyDown('A'))
+	if (position.GetDistance(boundsCenter) > boundsRadius - radius)
 	{
-		dir.x = -1;
+		position = boundsCenter + ((position - boundsCenter).GetNormalized() * (boundsRadius - radius));
 	}
 
-	if (frameWork->IsKeyDown('w') || frameWork->IsKeyDown('W'))
-	{
-		dir.y = 1;
-	}
+}
 
-	if (frameWork->IsKeyDown('s') || frameWork->IsKeyDown('S'))
-	{
-		dir.y = -1;
-	}
-
-	position += dir * speed * deltaTime;
-
-	//static_cast<Game>(frameWork)
+void Player::OnCollision(GameObject* other)
+{
+	
 }
 
 

@@ -9,6 +9,7 @@ class GameCore;
 class FWCore
 {
 protected:
+    GameCore* m_game;
     bool m_EscapeKeyWillQuit;
 
     int m_WindowWidth;

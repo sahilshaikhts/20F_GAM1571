@@ -3,7 +3,9 @@ class Player;
 class PlayerController;
 class Game: public fw::GameCore
 {
+
 public:
+	
 	Game(fw::FWCore* pFramework);
 	virtual ~Game();
 
@@ -12,8 +14,18 @@ public:
 	virtual void Update(float deltaTime) override;
 	virtual void Draw() override;
 	virtual void OnEvent(fw::Event* pEvent) override;
+
+	void GameStart();
+
+	void GamePlaying();
+
+	void GamePaused();
+	void GameResume();
+
+	void GameRestart();
+
+	void GameEnd();
 	
-	fw::EventManager* GetEventManager();
 	void DebugUI();
 	void Human();
 	void GeneratePlayer();
@@ -26,6 +38,8 @@ protected:
 	//arena
 	vec2 arenaCenter;
 	float arenaRadius;
+
+	fw::GameState gameState;
 	fw::ImGuiManager* uiManager=nullptr;
 	fw::ShaderProgram* m_pShader= nullptr;
 	fw::Mesh* m_pMesh = nullptr;

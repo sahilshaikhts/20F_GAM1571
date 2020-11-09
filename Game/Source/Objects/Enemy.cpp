@@ -14,7 +14,7 @@ Enemy::Enemy(fw::GameCore* core, Player* aPlayer, vec2 startPosition, vec2 aDir,
 	
 	color = aColor;
 	mesh = aMesh;
-	m_name = "enemy";
+	m_name = "Enemy";
 
 	boundsCenter = aBoundsCenter;
 	boundsRadius = aBoundsRadius;

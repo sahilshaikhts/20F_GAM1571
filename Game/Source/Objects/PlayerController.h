@@ -15,10 +15,10 @@ public:
     void StartFrame();
     void OnEvent(fw::Event* pEvent);
 
-    bool IsHeld(Mask dir)     { return (m_flags&dir)!=0; }
+    bool IsHeld(Mask dir) { return (m_flags & dir) != 0; }
 
-    bool WasPressed(Mask dir) { return((m_oldFlags & dir != 0) && (m_flags & dir == 0)); }
-    bool WasReleased(Mask dir) { return((m_oldFlags & dir != 0) && (m_flags & dir == 0)); }
+    bool WasPressed(Mask dir) { return(((m_oldFlags & dir) != 0) && ((m_flags & dir) == 0)); }
+    bool WasReleased(Mask dir) { return(((m_oldFlags & dir) != 0) && ((m_flags & dir) == 0)); }
 
 protected:
     unsigned int m_flags = 0;

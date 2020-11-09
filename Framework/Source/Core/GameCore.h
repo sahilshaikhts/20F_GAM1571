@@ -4,7 +4,18 @@ namespace fw {
     class Event;
     class EventManager;
     class GameObject;
-class FWCore;
+    class FWCore;
+
+    enum class GameState {
+    off,
+    Start,
+    Playing,
+    Paused,
+    Won,
+    Lost,
+    restart,
+    End,
+};
 
 class GameCore
 {

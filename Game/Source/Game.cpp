@@ -1,15 +1,20 @@
 #include "GamePCH.h"
 #include "Game.h"
-#include<time.h>
+
 #include "Objects/Player.h"
 #include "Objects/PlayerController.h"
 #include "Objects/Enemy.h"
-
 #include "Objects/Shape.h"
+
 #include "Events/GameEvents.h"
-//Handle game states in winmain
+#include<time.h>
+
+
+//NOTE:Handle game states in winmain?
+
 Game::Game(fw::FWCore* pFramework) :fw::GameCore(pFramework)
 {
+    
 }
 
 
@@ -39,10 +44,11 @@ void Game::Init()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     srand(time(0));
+    gameState = fw::GameState::Start;
     spawnInterval = 2;
     lastSpawnTime = 0;
     timer = 0;
-    
+
     arenaCenter = vec2(5, 5);
     arenaRadius = 4;
     uiManager = new fw::ImGuiManager(m_pFramework);
@@ -50,28 +56,9 @@ void Game::Init()
     m_pEventManager = new fw::EventManager();
 
     m_pShader = new fw::ShaderProgram("Data/Basic.vert", "Data/Basic.frag");
-    
-    //ARENA
-    m_pMesh = new fw::Mesh();
-    fw::Mesh* m = new fw::Mesh();
-    m->SetDrawMode(GL_TRIANGLE_FAN);
-    m->CreateCircle(40, arenaRadius);
 
-    //Enemy's mesh
-    mesh_enemy = new fw::Mesh();
-    mesh_enemy->SetDrawMode(GL_TRIANGLE_FAN);
-    mesh_enemy->CreateCircle(40, .2f);
-    
-    m_controller = new PlayerController();
-    {
-        fw::GameObject* obj = new fw::GameObject(this, "platform", vec4(0.4f, .5f, 0.5f, 1));
-        obj->SetMesh(m);
-        obj->SetShader(m_pShader);
-        obj->position = arenaCenter;
-        objects.push_back(obj); 
-    }//ARENA
-    GeneratePlayer();
-   }
+    GetEventManager()->AddEvent(new GameStateChangeEvent(fw::GameState::Start));
+}
 
 
 void Game::StartFrame(float deltaTime) 
@@ -146,8 +133,92 @@ void Game::OnEvent(fw::Event* pEvent)
         CollisionEvent* event = static_cast<CollisionEvent*>(pEvent);
         event->NotifyHandler();
     }
-}
+    if (pEvent->GetType() == GameStateChangeEvent::GetStaticEventType())
+    {
+        GameStateChangeEvent* event = static_cast<GameStateChangeEvent*>(pEvent);
+        switch (event->GetNewState())
+        {
+        case fw::GameState::Start:
+            GameStart();
+            break;
 
+        case fw::GameState::Playing:
+            GamePlaying();
+            break;
+
+        case fw::GameState::Paused:
+            if (gameState == fw::GameState::Paused)//will stay paused until pause event is created again to resume
+                GameResume();
+            else
+                GamePaused();
+            break;
+
+        case fw::GameState::Won:
+            gameState = event->GetNewState();
+            GameEnd();
+            break;
+
+        case fw::GameState::Lost:
+            gameState = event->GetNewState();
+            GameEnd();
+            break;
+
+        case fw::GameState::End:
+            gameState = event->GetNewState();
+            GameEnd();
+            break;
+
+        case fw::GameState::restart:
+            GameRestart();
+            break;
+
+        }
+    }
+
+}
+void Game::GameStart()
+{
+    //ARENA
+    m_pMesh = new fw::Mesh();
+    fw::Mesh* m = new fw::Mesh();
+    m->SetDrawMode(GL_TRIANGLE_FAN);
+    m->CreateCircle(40, arenaRadius);
+
+    //Enemy's mesh
+    mesh_enemy = new fw::Mesh();
+    mesh_enemy->SetDrawMode(GL_TRIANGLE_FAN);
+    mesh_enemy->CreateCircle(40, .2f);
+
+    m_controller = new PlayerController();
+    {
+        fw::GameObject* obj = new fw::GameObject(this, "platform", vec4(0.4f, .5f, 0.5f, 1));
+        obj->SetMesh(m);
+        obj->SetShader(m_pShader);
+        obj->position = arenaCenter;
+        objects.push_back(obj);
+    }//ARENA
+    GeneratePlayer();
+}
+void Game::GamePlaying()
+{
+
+}
+void Game::GamePaused()
+{
+
+}
+void Game::GameResume()
+{
+
+}
+void Game::GameRestart()
+{
+
+}
+void Game::GameEnd()
+{
+
+}
 
 
 
@@ -330,8 +401,9 @@ void Game::SpawnEnemy()
 
      vec2 velocity=(pos-(arenaCenter-randOffset)).GetNormalized();
 
-    Enemy* newEn = new Enemy(this,player,pos,velocity, vec4(.12f,.076f,.086f,1)/*vec4(.9f,.2f,.3f,1)*/, mesh_enemy,arenaCenter,arenaRadius,.2f);
+    Enemy* newEn = new Enemy(this,player,pos,velocity, vec4(.12f,.076f,.086f,1)/*vec4(.9f,.2f,.3f,1)*/,mesh_enemy,arenaCenter,arenaRadius,.2f);
     newEn->SetShader(m_pShader);
+    
     objects.push_back(newEn);
 
 }

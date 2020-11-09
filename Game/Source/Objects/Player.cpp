@@ -47,7 +47,9 @@ void Player::Update(float deltaTime)
 
 void Player::OnCollision(GameObject* other)
 {
-	
+	if (other->GetName()=="Enemy") {
+		inputEnabled = false;
+	}
 }
 
 

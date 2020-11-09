@@ -7,7 +7,7 @@
 
 #include "Objects/Shape.h"
 #include "Events/GameEvents.h"
-
+//Handle game states in winmain
 Game::Game(fw::FWCore* pFramework) :fw::GameCore(pFramework)
 {
 }
@@ -76,7 +76,6 @@ void Game::Init()
 
 void Game::StartFrame(float deltaTime) 
 {
-
 }
 void Game::Update(float deltaTime)
 {
@@ -113,6 +112,7 @@ void Game::DebugUI() {
     }
 
     ImGui::Checkbox("V-Sync", &vSync);
+ 
 }
 void Game::Draw()
 {
@@ -140,6 +140,11 @@ void Game::OnEvent(fw::Event* pEvent)
         objects.erase(it);
 
         delete target;
+    }
+    if (pEvent->GetType() == CollisionEvent::GetStaticEventType())
+    {
+        CollisionEvent* event = static_cast<CollisionEvent*>(pEvent);
+        event->NotifyHandler();
     }
 }
 
@@ -310,11 +315,12 @@ void Game::GeneratePlayer()
     pl->radius = .4f;
 
     objects.push_back(pl);
- 
+
 }
 
 void Game::SpawnEnemy()
 {
+
     float rad = rand() % 360;
     vec2 randomDir(cos(rad),sin(rad));
     vec2 pos = arenaCenter+(randomDir * arenaRadius);

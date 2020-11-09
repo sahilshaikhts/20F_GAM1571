@@ -28,8 +28,9 @@ void Enemy::Update(float deltaTime)
 	{
 		m_Core->GetEventManager()->AddEvent(new RemoveFromGameEvent(this));
 	}
-	if (position.GetDistance(player->position) <radius)
+	if (position.GetDistance(player->position) <radius+player->radius)
 	{
-		m_Core->GetEventManager()->AddEvent(new Collision(player, this));
+		CollisionEvent* obj = new CollisionEvent(player, this);
+ 		m_Core->GetEventManager()->AddEvent(obj);
 	}
 }

@@ -31,6 +31,10 @@ namespace fw {
 		
 	}
 
+	void GameObject::OnCollision(GameObject* other)
+	{
+	}
+
 	void GameObject::SetMesh(fw::Mesh* aMesh)
 	{
 		mesh = aMesh;

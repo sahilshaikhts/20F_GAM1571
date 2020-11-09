@@ -16,15 +16,16 @@ private:
 
 };
 
-class Collision :public fw::Event 
+class CollisionEvent :public fw::Event
 {
 public:
-	Collision(fw::GameObject* ahandler, fw::GameObject* aOther) { handler = ahandler; other = aOther; }
-	static const char* GetStaticEventType() { return "Collision"; }
+	CollisionEvent(fw::GameObject* ahandler, fw::GameObject* aOther) { handler = ahandler; other = aOther; }
+	virtual ~CollisionEvent() {}
+	static const char* GetStaticEventType() { return "CollisionEvent"; }
 	virtual const char* GetType() override { return GetStaticEventType(); }
-
+	void NotifyHandler() { handler->OnCollision(other); }
 private:
-	fw::GameObject* handler;
-	fw::GameObject* other;
+	fw::GameObject* handler=nullptr;
+	fw::GameObject* other= nullptr;
 
 };

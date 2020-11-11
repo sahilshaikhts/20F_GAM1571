@@ -12,9 +12,8 @@
 
 //NOTE:Handle game states in winmain?
 
-Game::Game(fw::FWCore* pFramework) :fw::GameCore(pFramework)
+Game::Game(fw::FWCore* pFramework, fw::GameState& aGameState) :fw::GameCore(pFramework),gameState(aGameState)
 {
-    
 }
 
 
@@ -67,20 +66,22 @@ void Game::StartFrame(float deltaTime)
 void Game::Update(float deltaTime)
 {
     m_pEventManager->DispatchAllEvents(this);
+ 
     uiManager->StartFrame(deltaTime);
     DebugUI();
     wglSwapInterval(vSync ? 1 : 0);
 
-    for (auto it = objects.begin(); it != objects.end(); it++)
-    {
-        fw::GameObject* obj = *it;
-        obj->Update(deltaTime);
+    if (gameState == fw::GameState::Playing) {
+        for (auto it = objects.begin(); it != objects.end(); it++)
+        {
+            fw::GameObject* obj = *it;
+            obj->Update(deltaTime);
+        }
+        if (timer > lastSpawnTime + spawnInterval) {
+            SpawnEnemy();
+            lastSpawnTime = timer;
+        }
     }
-    if (timer > lastSpawnTime + spawnInterval) {
-     SpawnEnemy();
-     lastSpawnTime = timer;
-    }
-
     timer += deltaTime;
 }
 void Game::DebugUI() {
@@ -116,8 +117,22 @@ void Game::Draw()
 
 void Game::OnEvent(fw::Event* pEvent)
 {
-    if (pEvent->GetType() == fw::InputEvent::GetStaticEventType())
-        m_controller->OnEvent(pEvent);
+    if (pEvent->GetType() == fw::InputEvent::GetStaticEventType()) {
+        fw::InputEvent* event = static_cast<fw::InputEvent*>(pEvent);
+
+        if (event->GetKeyCode() == KEY_ESC) {
+            fw::Event* endEvent = new GameStateChangeEvent(fw::GameState::End);
+            GetEventManager()->AddEvent(endEvent);
+        }
+        else
+            if (event->GetKeyCode() == 'R') {
+
+                fw::Event* endEvent = new GameStateChangeEvent(fw::GameState::Restart);
+                GetEventManager()->AddEvent(endEvent);
+            }
+            else
+                m_controller->OnEvent(pEvent);
+    }
 
     if (pEvent->GetType() == RemoveFromGameEvent::GetStaticEventType())
     {
@@ -133,6 +148,7 @@ void Game::OnEvent(fw::Event* pEvent)
         CollisionEvent* event = static_cast<CollisionEvent*>(pEvent);
         event->NotifyHandler();
     }
+
     if (pEvent->GetType() == GameStateChangeEvent::GetStaticEventType())
     {
         GameStateChangeEvent* event = static_cast<GameStateChangeEvent*>(pEvent);
@@ -168,7 +184,7 @@ void Game::OnEvent(fw::Event* pEvent)
             GameEnd();
             break;
 
-        case fw::GameState::restart:
+        case fw::GameState::Restart:
             GameRestart();
             break;
 
@@ -198,10 +214,12 @@ void Game::GameStart()
         objects.push_back(obj);
     }//ARENA
     GeneratePlayer();
+
+    gameState = fw::GameState::Playing;
 }
 void Game::GamePlaying()
 {
-
+    gameState = fw::GameState::Playing;
 }
 void Game::GamePaused()
 {
@@ -210,14 +228,39 @@ void Game::GamePaused()
 void Game::GameResume()
 {
 
+    gameState = fw::GameState::Playing;
 }
+
 void Game::GameRestart()
 {
+    gameState = fw::GameState::Restart;
+
+    //Note:temoporary,implement restart in future game.cpp when scene implemented ! Too bad
+    if (m_pShader != nullptr) {
+
+        delete m_pShader;
+
+        m_pShader = nullptr;
+    }
+    if (m_pMesh != nullptr) {
+        delete m_pMesh;
+        m_pMesh = nullptr;
+    }
+
+
+    for (fw::GameObject* obj : objects)
+    {
+        delete obj;
+    }
+
+    fw::Event* event = new GameStateChangeEvent(fw::GameState::Start);
+    GetEventManager()->AddEvent(event);
 
 }
+
 void Game::GameEnd()
 {
-
+      
 }
 
 

@@ -1,4 +1,4 @@
-	#include "GamePCH.h"
+#include "GamePCH.h"
 #include"Player.h"
 #include "Objects/PlayerController.h"
 Player::Player(fw::GameCore* aCore,PlayerController* controller, std::string aName, vec4 aColor) :fw::GameObject(aCore, aName, aColor)
@@ -7,6 +7,9 @@ Player::Player(fw::GameCore* aCore,PlayerController* controller, std::string aNa
 	position += vec2(1, 1);
 	frameWork = aCore->GetFrameWork();
 	m_controller = controller;
+	radius = 0.4f;//change this
+
+	collider = new CircleCollider(this,aCore->GetEventManager(),radius,vec2(0,0));
 }
 
 void Player::Update(float deltaTime)
@@ -42,12 +45,12 @@ void Player::Update(float deltaTime)
 	{
 		position = boundsCenter + ((position - boundsCenter).GetNormalized() * (boundsRadius - radius));
 	}
-
+	collider->Update(deltaTime);
 }
 
-void Player::OnCollision(GameObject* other)
+void Player::OnCollision(GameObject* other, CollisionState state)
 {
-	if (other->GetName()=="Enemy") {
+	if (other->GetName() == "Enemy" && state == CollisionState::Entered) {
 		inputEnabled = false;
 	}
 }

@@ -6,7 +6,7 @@ class Game: public fw::GameCore
 
 public:
 	
-	Game(fw::FWCore* pFramework);
+	Game(fw::FWCore* pFramework, fw::GameState& aGameState);
 	virtual ~Game();
 
 	void Init();
@@ -39,7 +39,7 @@ protected:
 	vec2 arenaCenter;
 	float arenaRadius;
 
-	fw::GameState gameState;
+	fw::GameState& gameState;
 	fw::ImGuiManager* uiManager=nullptr;
 	fw::ShaderProgram* m_pShader= nullptr;
 	fw::Mesh* m_pMesh = nullptr;

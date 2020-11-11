@@ -7,20 +7,21 @@ namespace fw {
     class FWCore;
 
     enum class GameState {
-    off,
+    Off,
     Start,
     Playing,
     Paused,
     Won,
     Lost,
-    restart,
+    Restart,
     End,
 };
-
+  
 class GameCore
 {
 public:
     GameCore(FWCore* pFramework);
+    void ShutDownGame();
     virtual ~GameCore();
 
     virtual void StartFrame(float deltaTime) =0;

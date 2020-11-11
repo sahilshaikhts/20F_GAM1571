@@ -5,7 +5,6 @@ namespace fw {
 	class Mesh;
 	class ShaderProgram;
 	class GameCore;
-
 	class GameObject
 	{
 	public:
@@ -17,7 +16,7 @@ namespace fw {
 
 		void Draw();
 		virtual void Update(float deltaTime);
-		virtual void OnCollision(GameObject* other);
+		virtual void OnCollision(GameObject* other, CollisionState state);
 
 		void SetMesh(Mesh* aMesh);
 		void SetShader(ShaderProgram* aShader);

@@ -25,7 +25,7 @@ namespace  fw {
 		float GetDistance(vec2 other) { vec2 diff(other.x - x, other.y - y); return diff.Magnitude(); }
 		float DotProduct(vec2 other) { return(x * other.x + y * other.y); }
 		vec2 GetNormalized() { return vec2(x / Magnitude(), y / Magnitude()); }
-		vec2 Normalize() { float magn = Magnitude(); x =magn; y = magn; }
+		void Normalize() { float magn = Magnitude(); x /=magn; y /= magn; }
 	
 	};
 

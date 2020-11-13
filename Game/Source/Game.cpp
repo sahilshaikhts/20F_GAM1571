@@ -29,6 +29,12 @@ Game::~Game()
         m_pMesh = nullptr;
     }
 
+    if (mesh_spike != nullptr)
+    {
+        delete mesh_spike;
+        mesh_spike = nullptr;
+    }
+
     delete uiManager;
 
 
@@ -64,6 +70,7 @@ void Game::Init()
 void Game::StartFrame(float deltaTime)
 {
 }
+
 void Game::Update(float deltaTime)
 {
     m_pEventManager->DispatchAllEvents(this);
@@ -103,6 +110,7 @@ void Game::Update(float deltaTime)
     countdown -= deltaTime;
     timer += deltaTime;
 }
+
 void Game::DebugUI() {
     //Object's list
 
@@ -213,6 +221,11 @@ void Game::GameStart()
     m->SetDrawMode(GL_TRIANGLE_FAN);
     m->CreateCircle(40, arenaRadius);
 
+    //Spike mesh
+    mesh_spike = new fw::Mesh();
+    mesh_spike->SetDrawMode(GL_TRIANGLE_FAN);
+    mesh_spike->CreateCircle(3, .3f);
+
     //Enemy's mesh
     mesh_enemy = new fw::Mesh();
     mesh_enemy->SetDrawMode(GL_TRIANGLE_FAN);
@@ -244,7 +257,8 @@ void Game::GameStart()
         ui_lives[i]->position = vec2(.5f + (i * .6f), 9.5f);
 
         objects.push_back(ui_lives[i]);
-    }gameState = fw::GameState::Playing;
+    }
+    gameState = fw::GameState::Playing;
 }
 void Game::GamePlaying()
 {
@@ -271,7 +285,11 @@ void Game::GameRestart()
         delete m_pMesh;
         m_pMesh = nullptr;
     }
-
+    if (mesh_spike != nullptr)
+    {
+        delete mesh_spike;
+        mesh_spike = nullptr;
+    }
 
     for (fw::GameObject* obj : objects)
     {
@@ -298,13 +316,14 @@ void Game::GameEnd(fw::GameState endState)
         }
         else if (currentWave == 2)
         {
-            countdown = 5;
+            countdown = 20;
         }else if (currentWave == 3)
         {
-            countdown = 40;
+            countdown = 30;
         }else if (currentWave == 4)//last
         {
-            countdown = 50;
+            enemyMaxSpeed +=1 ;
+            countdown = 40;
         }
         if (player->lives < 3) {
             player->lives++;
@@ -312,6 +331,15 @@ void Game::GameEnd(fw::GameState endState)
             lives = player->lives;
         }
         currentWave++;
+        
+
+        if (currentWave >= 4) {
+            for (int i = rand() % 4 + 2; i > 0; i--)
+            {
+                SpawnSpikes();
+            }
+        }
+        
         gameState = fw::GameState::Playing;
     }
     else if (endState == fw::GameState::End)
@@ -379,6 +407,24 @@ void Game::SpawnBouncingEnemy()
     newEn->speed = rand() % 6 +2;
     newEn->physicalCollider = true;
     newEn->m_name = "Enemy_2";
+    objects.push_back(newEn);
+
+}
+
+void Game::SpawnSpikes()
+{
+    float rad = rand() % 360;
+    
+    vec2 pos = vec2(cos(rad),sin(rad));
+    pos.Normalize();
+    vec2 randOffset=vec2(rand()%4+2, rand() % 4+2);
+    
+    Enemy* newEn = new Enemy(this, player, pos+(arenaCenter+randOffset), vec2(0,0), vec4(.87f, .43f, .32F, 1)/*vec4(.9f,.2f,.3f,1)*/, mesh_enemy, arenaCenter, arenaRadius, .2f);
+    
+    newEn->SetMesh(mesh_spike);
+    newEn->SetShader(m_pShader);
+    
+    newEn->m_name = "Spike";
     objects.push_back(newEn);
 
 }

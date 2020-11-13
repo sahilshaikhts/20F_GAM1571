@@ -46,29 +46,24 @@ void Player::Update(float deltaTime)
 		position = boundsCenter + ((position - boundsCenter).GetNormalized() * (boundsRadius - radius));
 	}
 
-	//if (invincibilityTimer > 0)
-	//{
-	//	invincibilityTimer -= deltaTime;
-	//	if(color.r < 0.5f)
-	//	color.r -= deltaTime;
-	//	color.g
-	//	else
-	//	color.r += deltaTime;
-
-	//	if (invincibilityTimer <= 0)
-	//		color = nColor;
-	//}
+	if (invincibilityTimer > 0)
+	{
+		invincibilityTimer -= deltaTime;
+		if (invincibilityTimer <= 0)
+			color.a =1;
+	}
 }
 
 void Player::OnCollision(GameObject* other, fw::CollisionState aState)
 {
-	if (other->GetName() == "Enemy"|| other->GetName() == "Enemy_2") {
+	if (other->GetName() == "Enemy"|| other->GetName() == "Enemy_2" || other->GetName() == "Spike" && invincibilityTimer<=0) {
 		if (aState == fw::CollisionState::Entered)
 			if (lives > 1) {
 				lives--;
 				if(other->GetName() == "Enemy")
 				m_Core->GetEventManager()->AddEvent(new RemoveFromGameEvent(other));
-				//invincibilityTimer = 3;
+				invincibilityTimer = 1.5f;
+				color.a = .5f;
 			}
 			else
 			{

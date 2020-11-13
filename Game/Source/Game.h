@@ -31,6 +31,8 @@ public:
 	void SpawnEnemy();
 
 	void SpawnBouncingEnemy();
+
+	void SpawnSpikes();
 	
 	bool vSync;
 
@@ -46,6 +48,7 @@ protected:
 	fw::ShaderProgram* m_pShader= nullptr;
 	fw::Mesh* m_pMesh = nullptr;
 	fw::Mesh* mesh_enemy = nullptr;
+	fw::Mesh* mesh_spike = nullptr;
 	PlayerController* m_controller;
 
 	std::vector< fw::GameObject*> objects;

@@ -1,15 +1,15 @@
-#include "GamePCH.h"
+	#include "GamePCH.h"
 #include"Player.h"
 #include "Objects/PlayerController.h"
+#include"Events/GameEvents.h"
 Player::Player(fw::GameCore* aCore,PlayerController* controller, std::string aName, vec4 aColor) :fw::GameObject(aCore, aName, aColor)
 {
 	speed = 5;
 	position += vec2(1, 1);
 	frameWork = aCore->GetFrameWork();
 	m_controller = controller;
-	radius = 0.4f;//change this
-
-	collider = new CircleCollider(this,aCore->GetEventManager(),radius,vec2(0,0));
+	nColor = color;
+	isSafe = false;
 }
 
 void Player::Update(float deltaTime)
@@ -45,13 +45,35 @@ void Player::Update(float deltaTime)
 	{
 		position = boundsCenter + ((position - boundsCenter).GetNormalized() * (boundsRadius - radius));
 	}
-	collider->Update(deltaTime);
+
+	//if (invincibilityTimer > 0)
+	//{
+	//	invincibilityTimer -= deltaTime;
+	//	if(color.r < 0.5f)
+	//	color.r -= deltaTime;
+	//	color.g
+	//	else
+	//	color.r += deltaTime;
+
+	//	if (invincibilityTimer <= 0)
+	//		color = nColor;
+	//}
 }
 
-void Player::OnCollision(GameObject* other, CollisionState state)
+void Player::OnCollision(GameObject* other, fw::CollisionState aState)
 {
-	if (other->GetName() == "Enemy" && state == CollisionState::Entered) {
-		inputEnabled = false;
+	if (other->GetName() == "Enemy"|| other->GetName() == "Enemy_2") {
+		if (aState == fw::CollisionState::Entered)
+			if (lives > 1) {
+				lives--;
+				if(other->GetName() == "Enemy")
+				m_Core->GetEventManager()->AddEvent(new RemoveFromGameEvent(other));
+				//invincibilityTimer = 3;
+			}
+			else
+			{
+				m_Core->GetEventManager()->AddEvent(new GameStateChangeEvent(fw::GameState::Lost));
+			}
 	}
 }
 

@@ -30,9 +30,5 @@
 #include "GL/WGLExtensions.h"
 
 
-enum class CollisionState {
-	Entered,
-	Colliding,
-	Exited,
-};
+
 #endif //__FrameworkPCH_H__

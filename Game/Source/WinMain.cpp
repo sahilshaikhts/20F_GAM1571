@@ -2,19 +2,15 @@
 #include "Game.h"
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	fw::GameState gameState;
-	gameState = fw::GameState::Paused;
-
 	fw::FWCore* pFramework = new fw::FWCore();
 	pFramework->Init(600, 600);
-
-	Game* pGame;
-	pGame = new Game(pFramework, gameState);
+	
+	Game* pGame = new Game(pFramework);
 	pGame->Init();
 
 	pFramework->Run(pGame);
-	pFramework->Shutdown();
 	
+	pFramework->Shutdown();
 	delete pGame;
 	delete pFramework;
 }

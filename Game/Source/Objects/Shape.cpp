@@ -39,5 +39,17 @@
         vec2(470, 290),
 
 };
-
+ vec2 shape_heart[] =
+ {
+     vec2(0.0f,0.05f),
+     vec2(-0.05f,0.2f),
+     vec2(-0.25f,0.2f),
+     vec2(-0.25f,0.0f),
+     vec2(0.0f,-0.3f),
+     vec2(0.25f,0.0f),
+     vec2(0.25f,0.2f),
+     vec2(0.05f,0.2f),
+     vec2(0.0f,0.05f)
+ };
+ int totalVerts_heart= std::size(shape_heart);
  int totalVerts_Dog=std::size(shape_dog);

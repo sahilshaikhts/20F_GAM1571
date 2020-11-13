@@ -6,7 +6,7 @@ class Game: public fw::GameCore
 
 public:
 	
-	Game(fw::FWCore* pFramework, fw::GameState& aGameState);
+	Game(fw::FWCore* pFramework);
 	virtual ~Game();
 
 	void Init();
@@ -24,12 +24,13 @@ public:
 
 	void GameRestart();
 
-	void GameEnd();
+	void GameEnd(fw::GameState endState);
 	
 	void DebugUI();
-	void Human();
 	void GeneratePlayer();
 	void SpawnEnemy();
+
+	void SpawnBouncingEnemy();
 	
 	bool vSync;
 
@@ -38,8 +39,9 @@ protected:
 	//arena
 	vec2 arenaCenter;
 	float arenaRadius;
-
-	fw::GameState& gameState;
+	int enemyMaxSpeed;
+	
+	fw::GameState gameState;
 	fw::ImGuiManager* uiManager=nullptr;
 	fw::ShaderProgram* m_pShader= nullptr;
 	fw::Mesh* m_pMesh = nullptr;
@@ -47,11 +49,12 @@ protected:
 	PlayerController* m_controller;
 
 	std::vector< fw::GameObject*> objects;
+	fw::GameObject* ui_lives[3];
 	fw::GameObject* arena;
 	Player* player;
-
 	vec2 pos;
 
 private:
-	float timer,spawnInterval, lastSpawnTime;
+	float timer,countdown,spawnInterval, lastSpawnTime;
+	int lives,currentWave=1;
 };

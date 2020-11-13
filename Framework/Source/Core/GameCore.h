@@ -16,12 +16,17 @@ namespace fw {
     Restart,
     End,
 };
-  
+    enum class CollisionState
+    {
+        Idle,
+        Entered,
+        Colliding,
+        Exited
+    };
 class GameCore
 {
 public:
     GameCore(FWCore* pFramework);
-    void ShutDownGame();
     virtual ~GameCore();
 
     virtual void StartFrame(float deltaTime) =0;

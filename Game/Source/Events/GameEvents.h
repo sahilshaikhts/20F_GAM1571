@@ -20,16 +20,16 @@ class CollisionEvent :public fw::Event
 {
 public:
 
-	CollisionEvent(fw::GameObject* ahandler, fw::GameObject* aOther, CollisionState aState) { handler = ahandler; other = aOther; state = aState; }
+	CollisionEvent(fw::GameObject* ahandler, fw::GameObject* aOther, fw::CollisionState aState ) { handler = ahandler; other = aOther; state = aState; }
 	virtual ~CollisionEvent() {}
 	static const char* GetStaticEventType() { return "CollisionEvent"; }
 	virtual const char* GetType() override { return GetStaticEventType(); }
-	void NotifyHandler() { handler->OnCollision(other,state); }
+	void NotifyHandler() {if(other!=nullptr) handler->OnCollision(other,state); }
 
 private:
 	fw::GameObject* handler = nullptr;
 	fw::GameObject* other = nullptr;
-	CollisionState state;
+	fw::CollisionState state;
 };
 class GameStateChangeEvent :public fw::Event
 {
@@ -45,4 +45,3 @@ private:
 	fw::GameState newState;
 
 };
-

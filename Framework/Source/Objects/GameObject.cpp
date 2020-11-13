@@ -1,4 +1,5 @@
 #include"FrameworkPCH.h"
+#include"../../Game/Source/GamePCH.h"
 #include "GameObject.h"
 
 #include "Mesh.h"
@@ -12,6 +13,7 @@ namespace fw {
 		m_name = aName;
 		m_Core = aCore;
 		color = aColor;
+
 	}
 
 	GameObject::~GameObject()
@@ -21,7 +23,7 @@ namespace fw {
 
 	void GameObject::Draw()
 	{
-		
+		if(isVisible)
 		mesh->Draw(position.x, position.y, shader,color);
 	}
 
@@ -31,9 +33,8 @@ namespace fw {
 		
 	}
 
-	void GameObject::OnCollision(GameObject* other, CollisionState state)
+	void GameObject::OnCollision(GameObject* other, CollisionState aState)
 	{
-
 	}
 
 	void GameObject::SetMesh(fw::Mesh* aMesh)

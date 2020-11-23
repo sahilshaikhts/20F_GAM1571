@@ -29,6 +29,8 @@
 #include "GL/GLExtensions.h"
 #include "GL/WGLExtensions.h"
 
+#include"../Libraries/imgui/imgui.h"
 
+#include"Memory/MyMemory.h"
 
 #endif //__FrameworkPCH_H__

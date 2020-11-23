@@ -18,7 +18,7 @@ namespace fw {
 
 	GameObject::~GameObject()
 	{
-
+		
 	}
 
 	void GameObject::Draw()

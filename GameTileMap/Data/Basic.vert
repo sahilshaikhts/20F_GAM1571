@@ -1,12 +1,11 @@
-uniform vec2 u_newPos;
+uniform float vX;
+uniform float vY;
 
-
-attribute vec2 a_UV;
 attribute vec2 a_Position;
 
 void main()
 {
-    vec2 pos=u_newPos;
+    vec2 pos=vec2(vX,vY);
     pos+=a_Position;
     pos/=5;
     pos-=1;

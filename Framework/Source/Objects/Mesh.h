@@ -12,6 +12,7 @@ namespace fw {
 
         void AddVertex(float aX, float aY);
         void AddVertex(vec2 position);
+        void AddVertex(vec4 position);
 
         void SetUniform1f(ShaderProgram* pShader, char* name, float value);
         void SetUniform2f(ShaderProgram* pShader, char* name, vec2 value);

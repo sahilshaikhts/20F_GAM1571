@@ -42,6 +42,36 @@ links
 pchheader"GamePCH.h"
 pchsource "Game/Source/WinMain.cpp"
 
+
+project "GameTileMap"
+	location "build/GameTileMap"
+	kind "WindowedApp"
+	debugdir "GameTileMap"
+
+files
+{
+	"GameTileMap/Source/**.cpp",
+	"GameTileMap/Source/**.h",
+	"GameTileMap/Data/**.vert",
+	"GameTileMap/Data/**.frag",
+}
+
+includedirs
+{
+	"Framework/Source",
+	"GameTileMap/Source",
+	
+}
+
+links
+{
+	"Framework",
+	"opengl32",
+}
+
+pchheader"GamePCH.h"
+pchsource "GameTileMap/Source/WinMain.cpp"
+
 project "Framework"
 	kind "staticlib"
 	location "build/Framework"
@@ -51,12 +81,15 @@ files
 	"Framework/Source/**.cpp",
 	"Framework/Source/**.h",
 	"Framework/Libraries/imgui/*cpp",
-	"Framework/Libraries/imgui/*.h",	
+	"Framework/Libraries/imgui/*.h",
+	"Framework/Libraries/stb/*.h",
 }
 
 includedirs
 {
 	"Framework/Source",
+	"Framework/Libraries",
+
 }
 
 pchheader"FrameworkPCH.h"

@@ -16,8 +16,8 @@ namespace fw {
         glDeleteBuffers(1, &m_VBO);
     }
 
-    void Mesh::Draw(float x, float y, ShaderProgram* pShader,vec4 color)
-    { 
+    void Mesh::Draw(float x, float y, ShaderProgram* pShader, vec4 color)
+    {
 
         glUseProgram(pShader->GetProgram());
 
@@ -25,23 +25,16 @@ namespace fw {
         glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 
         // Get the attribute variable’s location from the shader.
-        GLint loc = 0; //glGetAttribLocation( m_pShader->m_Program, "a_Position" );
+        GLint loc = glGetAttribLocation(pShader->GetProgram(), "a_Position");
         glEnableVertexAttribArray(loc);
+        glVertexAttribPointer(loc, 4, GL_FLOAT, GL_FALSE, 16, (void*)0);  // Describe the attributes in the VBO to OpenGL.
 
-        // Describe the attributes in the VBO to OpenGL.
-        glVertexAttribPointer(loc, 2, GL_FLOAT, GL_FALSE, 8, (void*)0);
-
-        {
-            
-           
-           SetUniform1f(pShader, "vX", x);
-           SetUniform1f(pShader, "vY", y);
-
-           SetUniform4f(pShader, "u_Color", color);
-
-           
+        loc = glGetAttribLocation(pShader->GetProgram(), "a_UV");
+        if (loc != -1) {
+            glVertexAttribPointer(loc, 4, GL_FLOAT, GL_FALSE, 16, (void*)8);  // Describe the attributes in the VBO to OpenGL.
+            SetUniform2f(pShader, "u_newPos", vec2(x, y));
+            SetUniform4f(pShader, "u_Color", color);
         }
-
         // Draw the primitive.
         glDrawArrays(m_PrimitiveType, 0, m_NumVertices);
     }
@@ -72,11 +65,11 @@ namespace fw {
         // Set this VBO to be the currently active one.
         glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 
-        float* attribs = new float[m_NumVertices * 2];
+        float* attribs = new float[(int)(m_NumVertices * sizeof(vertices) / 4)];
         std::copy(vertices.begin(), vertices.end(), attribs);
 
         // Copy our attribute data into the VBO.
-        int numAttributeComponents = m_NumVertices * 2; // x & y for each vertex.
+        int numAttributeComponents = m_NumVertices * sizeof(vertices)/4; // x , y(& u,v) for each vertex.
         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numAttributeComponents, attribs, GL_STATIC_DRAW);
 
         if (attribs != nullptr) { //Release memory
@@ -94,7 +87,8 @@ namespace fw {
 
             vertices.push_back(cos(angle)*radius);//x
             vertices.push_back(sin(angle) * radius);//y
-
+            vertices.push_back(0);//u
+            vertices.push_back(0);//v
             m_NumVertices ++;
         }
         GenerateMesh();
@@ -105,18 +99,33 @@ namespace fw {
     {
         vertices.push_back(aX);
         vertices.push_back(aY);
+
         m_NumVertices++;
         GenerateMesh();//probaly not a good idea to call it repeatedly
     }
 
     void Mesh::AddVertex(vec2 position)
     {
-        AddVertex(position.x, position.y);
+        vertices.push_back(position.x);
+        vertices.push_back(position.y);
+
+        m_NumVertices++;
+        GenerateMesh();
     }
 
     void Mesh::SetDrawMode(int mode)
     {
         m_PrimitiveType = mode;
+    }
+    void Mesh::AddVertex(vec4 position)
+    {
+        vertices.push_back(position.x);
+        vertices.push_back(position.y);
+        vertices.push_back(position.u);
+        vertices.push_back(position.v);
+        m_NumVertices++;
+
+        GenerateMesh();
     }
 
 }

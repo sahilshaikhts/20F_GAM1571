@@ -7,7 +7,7 @@
 namespace fw {
 	SpriteSheet::SpriteSheet(const char* fName):m_currentSprite(nullptr)
 	{
-		m_dataJason = fw::LoadCompleteFile(fName, nullptr);
+		m_dataJason = fw::	LoadCompleteFile(fName, nullptr);
 		m_spriteJson.Parse(m_dataJason);
 		m_SpriteSheetSize = vec2(m_spriteJson["Width"].GetFloat(), m_spriteJson["Height"].GetFloat());
 		m_frameIndex = 0;
@@ -15,6 +15,8 @@ namespace fw {
 	}
 	SpriteSheet::~SpriteSheet()
 	{
+		if (m_dataJason != nullptr)
+			delete[] m_dataJason;
 		for (fw::Sprite* cSprite : m_sprites)
 		{
 			delete cSprite;

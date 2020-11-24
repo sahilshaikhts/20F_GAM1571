@@ -41,6 +41,8 @@ protected:
 
 	Player* player;
 	fw::Mesh* mesh_player;
+	fw::Texture* texture_player;
+
 private:
 	float timer;
 };

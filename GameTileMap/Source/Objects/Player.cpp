@@ -39,10 +39,14 @@ Player::Player(fw::GameCore* aCore,PlayerController* controller, std::string aNa
 	m_spriteSheet->AddSprite("LinkWalkDown1");
 	m_spriteSheet->AddSprite("LinkWalkDown2");
 
+	delete[] jsonText;
 	m_animState = AnimState::stop;
 	animTimer = 0;
 }
-
+Player::~Player()
+{
+	delete m_spriteSheet;
+}
 void Player::Update(float deltaTime)
 {
 	m_UVOffset = m_spriteSheet->GetCurrentFrameSprite()->UVOffset;

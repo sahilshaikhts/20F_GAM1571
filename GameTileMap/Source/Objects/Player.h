@@ -26,6 +26,8 @@ public:
 	bool inputEnabled=true;
 	fw::SpriteSheet* m_spriteSheet;
 	Player(fw::GameCore* aCore, PlayerController* controller, std::string aName,char* spriteFName,vec4 aColor);
+
+	~Player();
 	void Update(float deltaTime) override;
 	void Player::OnCollision(GameObject* other, fw::CollisionState aState) override;
 

@@ -20,19 +20,29 @@ Game::Game(fw::FWCore* pFramework) :fw::GameCore(pFramework)
 
 Game::~Game()
 {
-    for (std::pair<std::string, fw::ShaderProgram*> cShader :m_shaders)
+    for (std::pair<std::string, fw::ShaderProgram*> cShader : m_shaders)
     {
         delete cShader.second;
     }
-     if (m_pEventManager != nullptr)
+    if (m_pEventManager != nullptr)
     {
         delete m_pEventManager;
         m_pEventManager = nullptr;
     }
+    if (m_controller != nullptr)
+        delete m_controller;
 
-    delete uiManager;
+    if (uiManager != nullptr)
+        delete uiManager;
+    
+    if (texture_player != nullptr)
+        delete texture_player;
+    
+    if (mesh_player != nullptr)
+        delete mesh_player;
 
-
+    if (player != nullptr)
+        delete player;
 }
 
 void Game::Init()
@@ -45,21 +55,21 @@ void Game::Init()
 
     m_pEventManager = new fw::EventManager();
     m_controller = new PlayerController();
-    
+
     m_shaders["Basic"] = new fw::ShaderProgram("Data/Basic.vert", "Data/Basic.frag");
 
-    fw::Mesh* lMesh = new fw::Mesh();
+    mesh_player = new fw::Mesh();
 
-    lMesh->SetDrawMode(GL_TRIANGLE_FAN);
+    mesh_player->SetDrawMode(GL_TRIANGLE_FAN);
     for (int i = 0; i < totalVerts_heart; i++) {
-        lMesh->AddVertex(shape_sprite[i]);//meshLives->CreateCircle(6, .15);
+        mesh_player->AddVertex(shape_sprite[i]);//meshLives->CreateCircle(6, .15);
     }
-    Player* pl = new Player(this, m_controller, "Player","Data/Texture/Zelda.json", vec4(.18f, .15f, .18f, 1));
-    player = pl;
-    pl->SetMesh(lMesh);
+    player = new Player(this, m_controller, "Player", "Data/Texture/Zelda.json", vec4(.18f, .15f, .18f, 1));
+    texture_player = new fw::Texture("Data/Texture/Zelda.png");
+    player->SetMesh(mesh_player);
     player->SetShader(m_shaders["Basic"]);
-    player->SetTexture(new fw::Texture("Data/Texture/Zelda.png"));
-    objects.push_back(pl);
+    player->SetTexture(texture_player);
+    objects.push_back(player);
 
 
     gameState = fw::GameState::Start;
@@ -71,7 +81,7 @@ void Game::StartFrame(float deltaTime)
 {
     uiManager->StartFrame(deltaTime);
 
-    m_controller->StartFrame(); 
+    m_controller->StartFrame();
     m_pEventManager->DispatchAllEvents(this);
 }
 
@@ -91,7 +101,7 @@ void Game::Update(float deltaTime)
     timer += deltaTime;
 }
 
-void Game::DebugUI() 
+void Game::DebugUI()
 {
     ImGui::Text("TIME :%.f", timer);
 }

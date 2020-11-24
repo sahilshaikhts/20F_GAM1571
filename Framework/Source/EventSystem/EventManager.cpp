@@ -11,7 +11,12 @@ namespace fw{
 	}
 	EventManager::~EventManager()
 	{
-
+		while (m_EventQueue.empty() == false)
+		{
+			Event* event = m_EventQueue.front();
+			m_EventQueue.pop();
+			delete event;
+		}
 	}
 	void EventManager::AddEvent(Event* pEvent)
 	{

@@ -54,6 +54,7 @@ files
 	"GameTileMap/Source/**.h",
 	"GameTileMap/Data/**.vert",
 	"GameTileMap/Data/**.frag",
+	"GameTileMap/Data/**.json",
 }
 
 includedirs
@@ -73,14 +74,14 @@ pchheader"GamePCH.h"
 pchsource "GameTileMap/Source/WinMain.cpp"
 
 project "Framework"
-	kind "staticlib"
-	location "build/Framework"
+	kind		"StaticLib"
+	location	"build/Framework"
 
-files
+files 
 {
 	"Framework/Source/**.cpp",
 	"Framework/Source/**.h",
-	"Framework/Libraries/imgui/*cpp",
+	"Framework/Libraries/imgui/*.cpp",
 	"Framework/Libraries/imgui/*.h",
 	"Framework/Libraries/stb/*.h",
 }
@@ -88,12 +89,9 @@ files
 includedirs
 {
 	"Framework/Source",
-	"Framework/Libraries",
-
 }
-
-pchheader"FrameworkPCH.h"
+pchheader "FrameworkPCH.h"
 pchsource "Framework/Source/Core/FWCore.cpp"
 
 filter "files:Framework/Libraries/imgui/*.cpp"
-	flags{"NoPCH"}
+	flags { "NoPCH" }

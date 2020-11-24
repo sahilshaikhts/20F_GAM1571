@@ -8,6 +8,7 @@ namespace fw {
 	GameObject::GameObject(){}
 	GameObject::GameObject(GameCore* aCore, std::string aName, vec4 aColor)
 	{
+		
 		position.x = 0;
 		position.y = 0;
 		m_name = aName;
@@ -24,7 +25,7 @@ namespace fw {
 	void GameObject::Draw()
 	{
 		if(isVisible)
-		mesh->Draw(position.x, position.y, shader,color);
+		mesh->Draw(position.x, position.y, shader,m_texture,color,m_UVScale,m_UVOffset);
 	}
 
 	void GameObject::Update(float deltaTime)
@@ -45,6 +46,10 @@ namespace fw {
 	void GameObject::SetShader(fw::ShaderProgram* aShader)
 	{
 		shader = aShader;
+	}
+	void GameObject::SetTexture(Texture* aTexture)
+	{
+		m_texture = aTexture;
 	}
 	std::string GameObject::GetName()
 	{

@@ -3,10 +3,10 @@
 #include "Math/Vector.h"
 #include "Utility/ShaderProgram.h"
 #include"Utility/Helpers.h"
-
+#include"../Objects/Texture.h"
 namespace fw {
 
-    Mesh::Mesh(){
+    Mesh::Mesh() {
 
     }
 
@@ -16,7 +16,7 @@ namespace fw {
         glDeleteBuffers(1, &m_VBO);
     }
 
-    void Mesh::Draw(float x, float y, ShaderProgram* pShader, vec4 color)
+    void Mesh::Draw(float x, float y, ShaderProgram* pShader, Texture* texture, vec4 color,vec2 aUVScale,vec2 aUVOffset)
     {
 
         glUseProgram(pShader->GetProgram());
@@ -31,12 +31,31 @@ namespace fw {
 
         loc = glGetAttribLocation(pShader->GetProgram(), "a_UV");
         if (loc != -1) {
-            glVertexAttribPointer(loc, 4, GL_FLOAT, GL_FALSE, 16, (void*)8);  // Describe the attributes in the VBO to OpenGL.
-            SetUniform2f(pShader, "u_newPos", vec2(x, y));
-            SetUniform4f(pShader, "u_Color", color);
+            glEnableVertexAttribArray(loc);
+            glVertexAttribPointer(loc, 2, GL_FLOAT, GL_FALSE, 16, (void*)8);  // Describe the attributes in the VBO to OpenGL.
         }
+
+        SetUniform4f(pShader, "u_Color", color);
+        SetUniform2f(pShader, "u_newPos", vec2(x, y));
+
+        SetUniform2f(pShader, "u_UVScale", aUVScale);
+        SetUniform2f(pShader, "u_UVOffset",aUVOffset);
+
+
+        if (texture != nullptr)
+        {
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, texture->GetHandle());
+            SetUniform1i(pShader, "u_Texture", 0);
+        }
+
         // Draw the primitive.
         glDrawArrays(m_PrimitiveType, 0, m_NumVertices);
+    }
+    void Mesh::SetUniform1i(ShaderProgram* pShader, char* name, int value)
+    {
+        int loc = glGetUniformLocation(pShader->GetProgram(), name);
+        glUniform1i(loc, value);
     }
     void Mesh::SetUniform1f(ShaderProgram* pShader, char* name, float value)
     {
@@ -58,7 +77,7 @@ namespace fw {
 
     void Mesh::GenerateMesh()
     {
-        
+
         // Generate a buffer for our vertex attributes.
         glGenBuffers(1, &m_VBO); // m_VBO is a GLuint.
 
@@ -69,7 +88,7 @@ namespace fw {
         std::copy(vertices.begin(), vertices.end(), attribs);
 
         // Copy our attribute data into the VBO.
-        int numAttributeComponents = m_NumVertices * sizeof(vertices)/4; // x , y(& u,v) for each vertex.
+        int numAttributeComponents = m_NumVertices * sizeof(vertices) / 4; // x , y(& u,v) for each vertex.
         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numAttributeComponents, attribs, GL_STATIC_DRAW);
 
         if (attribs != nullptr) { //Release memory
@@ -80,21 +99,21 @@ namespace fw {
 
     void Mesh::CreateCircle(unsigned int numSegments, float radius)
     {
-        float segmentInterval = 2*3.1415927f / numSegments;
+        float segmentInterval = 2 * 3.1415927f / numSegments;
         for (unsigned int i = 0; i < numSegments; i++)
         {
             float angle = segmentInterval * i;
 
-            vertices.push_back(cos(angle)*radius);//x
+            vertices.push_back(cos(angle) * radius);//x
             vertices.push_back(sin(angle) * radius);//y
             vertices.push_back(0);//u
             vertices.push_back(0);//v
-            m_NumVertices ++;
+            m_NumVertices++;
         }
         GenerateMesh();
     }
 
-    
+
     void Mesh::AddVertex(float aX, float aY)
     {
         vertices.push_back(aX);

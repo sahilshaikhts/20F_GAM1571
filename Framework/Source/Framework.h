@@ -18,6 +18,7 @@
 
 #include "Math/Vector.h"
 #include "Objects/Mesh.h"
+#include "Objects/Texture.h"
 #include "Objects/GameObject.h"
 #include "UI/ImGuiManager.h"
 

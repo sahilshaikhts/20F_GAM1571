@@ -14,6 +14,8 @@ Player::Player(fw::GameCore* aCore,PlayerController* controller, std::string aNa
 
 void Player::Update(float deltaTime)
 {
+	m_UVOffset = vec2(83.0f / 256.0f, 112.0f / 128.0f);
+	m_UVScale = vec2(16.0f / 256.0f, 16.0f / 128.0f);
 	if (inputEnabled)
 	{
 		vec2 dir(0, 0);
@@ -39,11 +41,6 @@ void Player::Update(float deltaTime)
 		}
 
 		position += dir * speed * deltaTime;
-	}
-
-	if (position.GetDistance(boundsCenter) > boundsRadius - radius)
-	{
-		position = boundsCenter + ((position - boundsCenter).GetNormalized() * (boundsRadius - radius));
 	}
 
 	if (invincibilityTimer > 0)

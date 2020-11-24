@@ -2,13 +2,15 @@
 #include "Math/Vector.h"
 namespace fw {
     class ShaderProgram;
-
+    class Texture;
     class Mesh
     {
     public:
         Mesh();
         virtual ~Mesh();
-        void Mesh::Draw(float x, float y, ShaderProgram* pShader, vec4 color);
+        void Mesh::Draw(float x, float y, ShaderProgram* pShader, Texture* texture, vec4 color, vec2 aUVScale, vec2 aUVOffset);
+
+        void SetUniform1i(ShaderProgram* pShader, char* name, int value);
 
         void AddVertex(float aX, float aY);
         void AddVertex(vec2 position);

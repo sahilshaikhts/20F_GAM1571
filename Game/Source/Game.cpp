@@ -14,6 +14,18 @@
 
 Game::Game(fw::FWCore* pFramework) :fw::GameCore(pFramework)
 {
+    arena = nullptr;
+    arenaRadius = 0;
+    countdown = 0;
+    enemyMaxSpeed = 0;
+    gameState = fw::GameState::Start;
+    lastSpawnTime = 0;
+    lives = 3;
+    m_controller = nullptr;
+    player = nullptr;
+    spawnInterval = 0;
+    timer = 0;
+    vSync = false;
 
 }
 
@@ -54,7 +66,7 @@ void Game::Init()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    srand(time(0));
+    srand((unsigned int)time(0));
     gameState = fw::GameState::Start;
     spawnInterval = 2;
     lastSpawnTime = 0;
@@ -377,16 +389,16 @@ void Game::GeneratePlayer()
 void Game::SpawnEnemy()
 {
 
-    float rad = rand() % 360;
-    vec2 randomDir(cos(rad), sin(rad));
+    float rad = (float)(rand() % 360);
+    vec2 randomDir((float)cos(rad), (float)sin(rad));
     vec2 pos = arenaCenter + (randomDir * arenaRadius);
-    rad = rand() % 45;
-    vec2 randOffset(cos(rad), sin(rad));
+    rad = (float)(rand() % 45);
+    vec2 randOffset((float)cos(rad), (float)sin(rad));
 
     vec2 velocity = (pos - (arenaCenter - randOffset)).GetNormalized();
 
     Enemy* newEn = new Enemy(this, player, pos, velocity, vec4(.9f, .2f, .3f, 1)/*vec4(.9f,.2f,.3f,1)*/, mesh_enemy, arenaCenter, arenaRadius, .2f);
-    newEn-> speed = rand() % enemyMaxSpeed + 4;
+    newEn-> speed = (float)(rand() % enemyMaxSpeed + 4);
 
     newEn->SetShader(m_pShader);
     newEn->physicalCollider = false;
@@ -399,17 +411,17 @@ void Game::SpawnEnemy()
 void Game::SpawnBouncingEnemy()
 {
 
-    float rad = rand() % 360;
-    vec2 randomDir(cos(rad), sin(rad));
+    float rad = (float)(rand() % 360);
+    vec2 randomDir((float)cos(rad), (float)sin(rad));
     vec2 pos = arenaCenter + (randomDir * arenaRadius);
-    rad = rand() % 45;
-    vec2 randOffset(cos(rad), sin(rad));
+    rad = (float)(rand() % 45);
+    vec2 randOffset((float)cos(rad), (float)sin(rad));
 
     vec2 velocity = (pos - (arenaCenter - randOffset)).GetNormalized();
 
     Enemy* newEn = new Enemy(this, player, pos, velocity, vec4(.87f, .43f, .32F, 1)/*vec4(.9f,.2f,.3f,1)*/, mesh_enemy, arenaCenter, arenaRadius, .2f);
     newEn->SetShader(m_pShader);
-    newEn->speed = rand() % 6 +2;
+    newEn->speed =(float)( rand() % 6 +2);
     newEn->physicalCollider = true;
     newEn->m_name = "Enemy_2";
     objects.push_back(newEn);
@@ -418,11 +430,11 @@ void Game::SpawnBouncingEnemy()
 
 void Game::SpawnSpikes()
 {
-    float rad = rand() % 360;
+    float rad =(float)( rand() % 360);
     
-    vec2 pos = vec2(cos(rad),sin(rad));
+    vec2 pos = vec2((float)cos(rad), (float)sin(rad));
     pos.Normalize();
-    vec2 randOffset=vec2(rand()%4+2, rand() % 4+2);
+    vec2 randOffset=vec2((float)(rand()%4+2), (float)(rand() % 4+2));
     
     Enemy* newEn = new Enemy(this, player, pos+(arenaCenter+randOffset), vec2(0,0), vec4(.87f, .43f, .32F, 1)/*vec4(.9f,.2f,.3f,1)*/, mesh_enemy, arenaCenter, arenaRadius, .2f);
     

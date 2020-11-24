@@ -10,11 +10,17 @@
 #include<time.h>
 
 
-//NOTE:Handle game states in winmain?
 
 Game::Game(fw::FWCore* pFramework) :fw::GameCore(pFramework)
 {
-
+    
+    gameState = fw::GameState::Start;
+    m_controller = nullptr;
+    mesh_player = nullptr;
+    texture_player = nullptr;
+    player = nullptr;
+    timer = 0;
+    vSync = false;
 }
 
 

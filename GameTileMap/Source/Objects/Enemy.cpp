@@ -4,6 +4,7 @@
 #include"Objects/Player.h"
 Enemy::Enemy(fw::GameCore* core, Player* aPlayer, vec2 startPosition, vec2 aDir, vec4 aColor, fw::Mesh* aMesh, vec2 aBoundsCenter, float aBoundsRadius, float aRadius)
 {
+	speed = 0;
 	m_Core = core;
 	player = aPlayer;
 

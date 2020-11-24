@@ -9,7 +9,6 @@ namespace fw {
 	{
 		m_dataJason = fw::LoadCompleteFile(fName, nullptr);
 		m_spriteJson.Parse(m_dataJason);
-
 		m_SpriteSheetSize = vec2(m_spriteJson["Width"].GetFloat(), m_spriteJson["Height"].GetFloat());
 		m_frameIndex = 0;
 	}
@@ -21,29 +20,29 @@ namespace fw {
 		}
 		m_currentSprite = nullptr;
 	}
-	void SpriteSheet::AddSprite(const std::string aName)
+	void SpriteSheet::AddSprite(Sprite* spr)
 	{
-		if (m_dataJason != "")
-		{
-			rapidjson::Document document;
-			document.Parse(m_dataJason);
+		m_sprites.push_back(spr);
+	}
+	void SpriteSheet::AddSprite(const std::string aName){
+			rapidjson::Value& spriteList = m_spriteJson["Sprites"];
 
-			rapidjson::Value& spriteList = document["Sprites"];
-			int n = 0;
-			while (true)
-			{
+			for (int n = 0; ; n++)
+			{			
 				std::string resultName = spriteList[n]["Name"].GetString();
 			
 				if (resultName == aName)
 				{
 					Sprite* spr=new Sprite();
-					spr->UVOffset = vec2(spriteList[n]["X"].GetInt(), spriteList[n]["Y"].GetFloat());
-					spr->UVOffset = vec2(spriteList[n]["W"].GetInt(), spriteList[n]["H"].GetFloat());
+					spr->UVOffset = vec2(spriteList[n]["X"].GetInt()/m_SpriteSheetSize.x, spriteList[n]["Y"].GetFloat()/ m_SpriteSheetSize.y);
+					spr->UVScale = vec2(spriteList[n]["W"].GetInt()/m_SpriteSheetSize.x, spriteList[n]["H"].GetFloat()/ m_SpriteSheetSize.y);
 					m_sprites.push_back(spr);
+					break;
 				}
-				n++;
 			}
-		}
+	
+		if (m_currentSprite == nullptr)
+			m_currentSprite = m_sprites[0];
 	}
 	void SpriteSheet::NextFrame() 
 	{

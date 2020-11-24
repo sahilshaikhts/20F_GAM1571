@@ -54,12 +54,11 @@ void Game::Init()
     for (int i = 0; i < totalVerts_heart; i++) {
         lMesh->AddVertex(shape_sprite[i]);//meshLives->CreateCircle(6, .15);
     }
-    Player* pl = new Player(this, m_controller, "Player","Data/Texture/Zelda.png", vec4(.18f, .15f, .18f, 1));
+    Player* pl = new Player(this, m_controller, "Player","Data/Texture/Zelda.json", vec4(.18f, .15f, .18f, 1));
     player = pl;
     pl->SetMesh(lMesh);
     player->SetShader(m_shaders["Basic"]);
     player->SetTexture(new fw::Texture("Data/Texture/Zelda.png"));
-
     objects.push_back(pl);
 
 

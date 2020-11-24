@@ -11,6 +11,7 @@ namespace fw {
 
 		SpriteSheet(const char* fName);
 		void AddSprite(const std::string name);
+		void AddSprite(Sprite* spr);
 		void NextFrame();
 		~SpriteSheet();
 		Sprite* GetCurrentFrameSprite() { return m_currentSprite; };

@@ -16,8 +16,19 @@ Player::Player(fw::GameCore* aCore,PlayerController* controller, std::string aNa
 	invincibilityTimer = 0;
 	
 	m_spriteSheet = new fw::SpriteSheet(spriteFName);
+	
+	char* jsonText = fw::LoadCompleteFile(spriteFName, nullptr);
+	rapidjson::Document doc;
+	doc.Parse(jsonText);
+	
+	/*fw::Sprite* firstFrame = new fw::Sprite;
+	firstFrame->UVOffset = vec2(doc["Sprites"]["LinkWalkRight1"]["X"].GetFloat()/256.0f, doc["Sprites"]["LinkWalkRight1"]["Y"].GetFloat()/128.0f);
+	firstFrame->UVScale = vec2(doc["Sprites"]["LinkWalkRight1"]["W"].GetFloat()/256.0f, doc["LinkWalkRight1"]["H"].GetFloat()/128.0f);
+	m_spriteSheet->AddSprite(firstFrame);*/
+
+
 	m_spriteSheet->AddSprite("LinkWalkRight1");
-//	m_spriteSheet->AddSprite("LinkWalkRight2");
+	m_spriteSheet->AddSprite("LinkWalkRight2");
 }
 
 void Player::Update(float deltaTime)

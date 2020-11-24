@@ -1,21 +1,30 @@
-	#include "GamePCH.h"
+#include "GamePCH.h"
 #include"Player.h"
 #include "Objects/PlayerController.h"
 #include"Events/GameEvents.h"
-Player::Player(fw::GameCore* aCore,PlayerController* controller, std::string aName, vec4 aColor) :fw::GameObject(aCore, aName, aColor)
+
+Player::Player(fw::GameCore* aCore,PlayerController* controller, std::string aName, char* spriteFName, vec4 aColor) :fw::GameObject(aCore, aName, aColor)
 {
+	lives = 3;
 	speed = 5;
+	radius = 0;
 	position += vec2(1, 1);
 	frameWork = aCore->GetFrameWork();
 	m_controller = controller;
 	nColor = color;
-	isSafe = false;
+	flashRed=isSafe = false;
+	invincibilityTimer = 0;
+	
+	m_spriteSheet = new fw::SpriteSheet(spriteFName);
+	m_spriteSheet->AddSprite("LinkWalkRight1");
+//	m_spriteSheet->AddSprite("LinkWalkRight2");
 }
 
 void Player::Update(float deltaTime)
 {
-	m_UVOffset = vec2(83.0f / 256.0f, 112.0f / 128.0f);
-	m_UVScale = vec2(16.0f / 256.0f, 16.0f / 128.0f);
+	m_UVOffset = m_spriteSheet->GetCurrentFrameSprite()->UVOffset;
+	m_UVScale = m_spriteSheet->GetCurrentFrameSprite()->UVScale;
+
 	if (inputEnabled)
 	{
 		vec2 dir(0, 0);

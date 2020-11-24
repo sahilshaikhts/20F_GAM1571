@@ -2,12 +2,23 @@
 class PlayerController;
 class Player :public fw::GameObject
 {
+
+	enum AnimState
+	{
+		stop=-1,
+		right=0,
+		left=2,
+		up=4,
+		down=6
+	};
 	class SpriteSheet;
 private:
 	fw::FWCore* frameWork;
 	float speed, invincibilityTimer;
+	float animTimer;
 	bool isSafe, flashRed;
 	vec4 nColor;
+	AnimState m_animState;
 	PlayerController* m_controller;
 public:
 	int lives;

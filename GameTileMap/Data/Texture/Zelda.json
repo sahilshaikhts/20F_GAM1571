@@ -2,6 +2,7 @@
 	"SpriteTool":	2,
 	"Texture":	"Zelda.png",
 	"Width":	256,
+	"Width":	256,
 	"Height":	128,
 	"Sprites":	[{
 			"Name":	"Fire1",

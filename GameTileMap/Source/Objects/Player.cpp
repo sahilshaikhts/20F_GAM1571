@@ -6,7 +6,7 @@
 Player::Player(fw::GameCore* aCore,PlayerController* controller, std::string aName, char* spriteFName, vec4 aColor) :fw::GameObject(aCore, aName, aColor)
 {
 	lives = 3;
-	speed = 5;
+	speed = 4;
 	radius = 0;
 	position += vec2(1, 1);
 	frameWork = aCore->GetFrameWork();
@@ -29,6 +29,18 @@ Player::Player(fw::GameCore* aCore,PlayerController* controller, std::string aNa
 
 	m_spriteSheet->AddSprite("LinkWalkRight1");
 	m_spriteSheet->AddSprite("LinkWalkRight2");
+	
+	m_spriteSheet->AddSprite("LinkWalkLeft1");
+	m_spriteSheet->AddSprite("LinkWalkLeft2");
+	
+	m_spriteSheet->AddSprite("LinkWalkUp1");
+	m_spriteSheet->AddSprite("LinkWalkUp2");
+	
+	m_spriteSheet->AddSprite("LinkWalkDown1");
+	m_spriteSheet->AddSprite("LinkWalkDown2");
+
+	m_animState = AnimState::stop;
+	animTimer = 0;
 }
 
 void Player::Update(float deltaTime)
@@ -43,24 +55,38 @@ void Player::Update(float deltaTime)
 		if (m_controller->IsHeld(PlayerController::Mask::Right))
 		{
 			dir.x = 1;
+			m_animState = right;
 		}
 
 		if (m_controller->IsHeld(PlayerController::Mask::Left))
 		{
 			dir.x = -1;
+			m_animState = left;
 		}
 
 		if (m_controller->IsHeld(PlayerController::Mask::Up))
 		{
 			dir.y = 1;
+			m_animState = up;
 		}
 
 		if (m_controller->IsHeld(PlayerController::Mask::Down))
 		{
 			dir.y = -1;
+			m_animState = down;
 		}
 
+		if (m_animState != stop && animTimer>.15f)
+		{
+			if (m_spriteSheet->GetIndex() % 2 == 0)
+				m_spriteSheet->ChangeFrameIndex(m_animState + 1);
+			else
+				m_spriteSheet->ChangeFrameIndex(m_animState);
+			animTimer = 0;
+		}
+		animTimer += deltaTime;
 		position += dir * speed * deltaTime;
+		m_animState = stop;
 	}
 
 	if (invincibilityTimer > 0)

@@ -13,7 +13,7 @@ void main()
     vec2 pos=u_newPos;
 
     pos+=a_Position;
-    pos*=3;
+    pos*=1;
     pos/=5;
     pos-=1;
 

@@ -11,6 +11,7 @@ namespace fw {
 		m_spriteJson.Parse(m_dataJason);
 		m_SpriteSheetSize = vec2(m_spriteJson["Width"].GetFloat(), m_spriteJson["Height"].GetFloat());
 		m_frameIndex = 0;
+
 	}
 	SpriteSheet::~SpriteSheet()
 	{
@@ -43,6 +44,11 @@ namespace fw {
 	
 		if (m_currentSprite == nullptr)
 			m_currentSprite = m_sprites[0];
+	}
+	void SpriteSheet::ChangeFrameIndex(int index)
+	{
+		m_currentSprite = m_sprites[index];
+		m_frameIndex = index;
 	}
 	void SpriteSheet::NextFrame() 
 	{

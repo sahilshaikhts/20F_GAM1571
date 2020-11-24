@@ -13,6 +13,8 @@ namespace fw {
 		void AddSprite(const std::string name);
 		void AddSprite(Sprite* spr);
 		void NextFrame();
+		void ChangeFrameIndex(int index);
+		int GetIndex() { return m_frameIndex; }
 		~SpriteSheet();
 		Sprite* GetCurrentFrameSprite() { return m_currentSprite; };
 

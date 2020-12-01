@@ -7,7 +7,7 @@
 Player::Player(fw::GameCore* aCore, PlayerController* controller, std::string aName, vec4 aColor) :fw::GameObject(aCore, aName, aColor)
 {
 	lives = 3;
-	speed = 4;
+	speed = 2;
 	radius = 0;
 	position += vec2(1, 1);
 	frameWork = aCore->GetFrameWork();
@@ -41,19 +41,19 @@ void Player::Update(float deltaTime)
 			dir.x = 1;
 			m_animState = right;
 		}
-
+		else
 		if (m_controller->IsHeld(PlayerController::Mask::Left))
 		{
 			dir.x = -1;
 			m_animState = left;
 		}
-
+		else
 		if (m_controller->IsHeld(PlayerController::Mask::Up))
 		{
 			dir.y = 1;
 			m_animState = up;
 		}
-
+		else
 		if (m_controller->IsHeld(PlayerController::Mask::Down))
 		{
 			dir.y = -1;
@@ -62,7 +62,7 @@ void Player::Update(float deltaTime)
 		if (m_controller->IsHeld(PlayerController::Mask::Attack))
 		{
 		}
-		if (m_animState != stop && animTimer>.15f)
+		if (m_animState != stop && animTimer>.2f)
 		{
 			currentSprite=m_animation->GetNextKeyFrame((Animation_Player::State)m_animState);
 			animTimer = 0;

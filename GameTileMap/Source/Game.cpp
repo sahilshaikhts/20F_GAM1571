@@ -52,6 +52,10 @@ Game::~Game()
 
     if (player != nullptr)
         delete player;
+	
+    if (m_tileMap != nullptr)
+        delete m_tileMap;
+	
 }
 
 void Game::Init()

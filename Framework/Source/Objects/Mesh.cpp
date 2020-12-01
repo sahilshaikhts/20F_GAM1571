@@ -20,6 +20,7 @@ namespace fw {
     {
 
         glUseProgram(pShader->GetProgram());
+        //glViewport();
 
         // Set this VBO to be the currently active one.
         glBindBuffer(GL_ARRAY_BUFFER, m_VBO);

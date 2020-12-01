@@ -22,6 +22,7 @@ public:
 	};
 	
 	TileMap(const TileType* pLayout,fw::Texture* aTexture, fw::SpriteSheet* aSpriteSheet, fw::ShaderProgram* aShader, int width, int height);
+	~TileMap();
 	void Draw();
 	
 private:
@@ -32,7 +33,8 @@ private:
 	TileType* m_layout;
 
 	ivec2 m_MapSize = ivec2(0, 0); // Width and Height of the map in tiles.
-	vec2 m_TileSize = vec2(5, 5); // How big is a tile in world units?
+	vec2
+	m_TileSize = vec2(5, 5); // How big is a tile in world units?
 	
 	std::vector<TileProperties> m_tilePropertieses;
 	

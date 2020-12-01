@@ -11,7 +11,7 @@ TileMap::TileMap(const TileType* pLayout, fw::Texture* aTexture, fw::SpriteSheet
 	m_tilePropertieses[TileType::tree] = TileProperties(m_spriteSheet->GetSpriteInfo("TileTreeRed"), true);
 	m_tilePropertieses[TileType::wall] = TileProperties(m_spriteSheet->GetSpriteInfo("TileMountain5"), false);
 	m_tilePropertieses[TileType::water] = TileProperties(m_spriteSheet->GetSpriteInfo("TileWater5"), true);
-	
+
 	m_shader = aShader;
 	m_texture = aTexture;
 	m_mesh = new fw::Mesh();
@@ -32,7 +32,12 @@ TileMap::TileMap(const TileType* pLayout, fw::Texture* aTexture, fw::SpriteSheet
 
 }
 
-
+TileMap::~TileMap()
+{
+	delete m_mesh;
+	delete m_spriteSheet;
+	delete[] m_layout;
+}
 void TileMap::Draw()
 {
 	for (int y = 0; y < m_MapSize.y; y++)
@@ -40,7 +45,7 @@ void TileMap::Draw()
 		for (int x = 0; x < m_MapSize.x; x++)
 		{
 			int index = (y * m_MapSize.x + x);
-			m_mesh->Draw(x, y, vec2(1, 1), m_shader, m_texture, vec4::White()
+			m_mesh->Draw((float)x, (float)y, vec2(1, 1), m_shader, m_texture, vec4::White()
 				, m_tilePropertieses[m_layout[index]].sprite->m_UVScale, m_tilePropertieses[m_layout[index]].sprite->m_UVOffset);
 		}
 	}

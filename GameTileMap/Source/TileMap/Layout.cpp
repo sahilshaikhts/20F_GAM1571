@@ -15,7 +15,7 @@ const TileMap::TileType Layout_TestMap[] =
 	 TT::wall,TT::wall,TT::water,TT::water,TT::dirt,TT::dirt,TT::dirt,TT::dirt,TT::empty,TT::wall,
 	 TT::empty,TT::dirt,TT::empty,TT::dirt,TT::dirt,TT::empty,TT::empty,TT::empty,TT::tree,TT::wall,
 	 TT::empty,TT::empty,TT::empty,TT::empty,TT::empty,TT::empty,TT::empty,TT::empty,TT::wall,TT::wall,
-	 TT::dirt,TT::dirt,TT::empty,TT::empty,TT::tree,TT::tree,TT::empty,TT::empty,TT::wall,TT::wall,
-	 TT::dirt,TT::empty,TT::empty,TT::tree,TT::tree,TT::dirt,TT::tree,TT::empty,TT::empty,TT::wall,
+	 TT::dirt,TT::dirt,TT::empty,TT::empty,TT::tree,TT::water,TT::water,TT::empty,TT::wall,TT::wall,
+	 TT::dirt,TT::empty,TT::empty,TT::tree,TT::tree,TT::water,TT::tree,TT::empty,TT::empty,TT::wall,
 	 TT::dirt,TT::empty,TT::dirt,TT::dirt,TT::tree,TT::tree,TT::tree,TT::empty,TT::empty,TT::dirt,
 };

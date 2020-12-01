@@ -8,8 +8,8 @@
 //	float y;
 //};
 
-extern vec4 shape_heart[];
-extern vec4 shape_sprite[];
+extern  vec4 shape_heart[];
+extern  vec4 shape_sprite[];
 
-extern int totalVerts_heart;
-
+extern  int totalVerts_heart;
+extern  int totalVerts_sprite;

@@ -1,29 +1,30 @@
 #pragma once
+
+#include "Math/Vector.h"
+
 namespace fw {
+
 	struct Sprite
 	{
-		vec2 UVScale=vec2(1,1);
-		vec2 UVOffset=vec2(0,0);
-	};
-	class SpriteSheet
-	{
-	public:
+		vec2 m_UVScale = vec2(1,1);
+		vec2 m_UVOffset = vec2(0,0);
 
-		SpriteSheet(const char* fName);
-		void AddSprite(const std::string name);
-		void AddSprite(Sprite* spr);
-		void NextFrame();
-		void ChangeFrameIndex(int index);
-		int GetIndex() { return m_frameIndex; }
-		~SpriteSheet();
-		Sprite* GetCurrentFrameSprite() { return m_currentSprite; };
-
-	private:
-		std::vector<Sprite*>m_sprites;
-		rapidjson::Document m_spriteJson;
-		Sprite* m_currentSprite;
-		vec2 m_SpriteSheetSize;
-		char* m_dataJason;
-		int m_frameIndex;
+		Sprite() {}
+		Sprite(vec2 scale, vec2 offset) { m_UVScale = scale, m_UVOffset = offset; }
 	};
-}
+class SpriteSheet
+{
+public:
+
+public:
+	SpriteSheet(const char* filename);
+	virtual ~SpriteSheet();
+
+	Sprite* GetSpriteInfo(const char* spriteName);
+	Sprite* GetSpriteInfo(const std::string spriteName);
+
+private:
+	std::map<std::string, Sprite> m_Sprites;
+};
+
+} // namespace fw

@@ -1,31 +1,38 @@
 #pragma once
 class PlayerController;
+class Animation_Player;
+class SpriteSheet;
+
 class Player :public fw::GameObject
 {
 
+private:
 	enum AnimState
 	{
-		stop=-1,
-		right=0,
-		left=2,
-		up=4,
-		down=6
+		stop = -1,
+		left,
+		right,
+		up,
+		down,
 	};
-	class SpriteSheet;
-private:
+
 	fw::FWCore* frameWork;
 	float speed, invincibilityTimer;
 	float animTimer;
 	bool isSafe, flashRed;
 	vec4 nColor;
-	AnimState m_animState;
 	PlayerController* m_controller;
+
+	fw::Sprite* currentSprite;
+	Animation_Player* m_animation;
+	AnimState m_animState;
+	
 public:
 	int lives;
 	float radius;
-	bool inputEnabled=true;
-	fw::SpriteSheet* m_spriteSheet;
-	Player(fw::GameCore* aCore, PlayerController* controller, std::string aName,char* spriteFName,vec4 aColor);
+	bool inputEnabled = true;
+
+	Player(fw::GameCore* aCore, PlayerController* controller, std::string aName, vec4 aColor);
 
 	~Player();
 	void Update(float deltaTime) override;

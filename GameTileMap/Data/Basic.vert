@@ -2,6 +2,7 @@ uniform vec2 u_newPos;
 
 uniform vec2 u_UVScale;
 uniform vec2 u_UVOffset;
+uniform vec2 u_scale;
 
 attribute vec2 a_UV;
 attribute vec2 a_Position;
@@ -13,7 +14,7 @@ void main()
     vec2 pos=u_newPos;
 
     pos+=a_Position;
-    pos*=1;
+    pos*=u_scale;
     pos/=5;
     pos-=1;
 

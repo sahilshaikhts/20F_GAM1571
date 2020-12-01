@@ -32,5 +32,6 @@ namespace fw {
 	protected:
 		Mesh* mesh = nullptr;
 		GameCore* m_Core = nullptr;
+		vec2 sprite_scale;
 	};
 }

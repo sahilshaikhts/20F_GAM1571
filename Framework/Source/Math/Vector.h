@@ -30,7 +30,7 @@ namespace  fw {
 
 		vec2 operator-() const { return vec2(-x, -y); }//invert
 		
-		float Magnitude() { float r = (x * x) + (y * y); return sqrt(r); }
+		float Magnitude() { float r = (x * x) + (y * y); return ((float)sqrt(r)); }
 		float GetDistance(vec2 other) { vec2 diff(other.x - x, other.y - y); return diff.Magnitude(); }
 		float DotProduct(vec2 other) { return(x * other.x + y * other.y); }
 		void Normalize() { float magn = Magnitude(); x /=magn; y /= magn; }
@@ -78,4 +78,16 @@ namespace  fw {
 
 	};
 
+	//INT
+	class ivec2
+	{
+	public:
+		int x, y;
+
+		ivec2() :x(0), y(0) {}
+		ivec2(int aX, int aY) { Set(aX, aY); }
+
+		void Set(int aX, int aY) { x = aX; y = aY; }
+	};
+	
 }

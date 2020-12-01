@@ -1,6 +1,7 @@
 #pragma once
 class Player;
 class PlayerController;
+class TileMap;
 class Game: public fw::GameCore
 {
 
@@ -42,7 +43,7 @@ protected:
 	Player* player;
 	fw::Mesh* mesh_player;
 	fw::Texture* texture_player;
-
+	TileMap* m_tileMap;
 private:
 	float timer;
 };

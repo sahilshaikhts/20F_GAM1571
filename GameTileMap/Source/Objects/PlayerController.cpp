@@ -24,16 +24,18 @@ void PlayerController::OnEvent(fw::Event* pEvent)
 	{
 		if (inputEvent->GetDeviceState() == fw::InputEvent::DeviceState::pressed) {
 			if (inputEvent->GetKeyCode() == 'W')
-				m_flags|=Up;
+				m_flags |= Up;
 			if (inputEvent->GetKeyCode() == 'S')
 				m_flags |= Down;
 			if (inputEvent->GetKeyCode() == 'A')
-				m_flags|=Left;
+				m_flags |= Left;
 			if (inputEvent->GetKeyCode() == 'D')
 				m_flags |= Right;
+			if (inputEvent->GetKeyCode() == 32)
+				m_flags |= Attack;
 		}
-	
-	
+
+
 		if (inputEvent->GetDeviceState() == fw::InputEvent::DeviceState::released) {
 			if (inputEvent->GetKeyCode() == 'W')
 				m_flags &= ~Up;
@@ -43,6 +45,8 @@ void PlayerController::OnEvent(fw::Event* pEvent)
 				m_flags &= ~Left;
 			if (inputEvent->GetKeyCode() == 'D')
 				m_flags &= ~Right;
+			if (inputEvent->GetKeyCode() == 32)
+				m_flags &= ~Attack;
 		}
 
 	}

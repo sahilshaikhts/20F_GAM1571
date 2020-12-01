@@ -31,6 +31,8 @@ void PlayerController::OnEvent(fw::Event* pEvent)
 				m_flags|=Left;
 			if (inputEvent->GetKeyCode() == 'D')
 				m_flags |= Right;
+			if (inputEvent->GetKeyCode() ==32)
+				m_flags |= Attack;
 		}
 	
 	
@@ -43,6 +45,8 @@ void PlayerController::OnEvent(fw::Event* pEvent)
 				m_flags &= ~Left;
 			if (inputEvent->GetKeyCode() == 'D')
 				m_flags &= ~Right;
+			if (inputEvent->GetKeyCode() == 32)
+				m_flags &= ~Attack;
 		}
 
 	}

@@ -16,7 +16,7 @@ namespace fw {
         glDeleteBuffers(1, &m_VBO);
     }
 
-    void Mesh::Draw(float x, float y, ShaderProgram* pShader, Texture* texture, vec4 color,vec2 aUVScale,vec2 aUVOffset)
+    void Mesh::Draw(float x, float y, vec2 sprite_scale, ShaderProgram* pShader, Texture* texture, vec4 color,vec2 aUVScale,vec2 aUVOffset)
     {
 
         glUseProgram(pShader->GetProgram());
@@ -40,6 +40,7 @@ namespace fw {
 
         SetUniform2f(pShader, "u_UVScale", aUVScale);
         SetUniform2f(pShader, "u_UVOffset",aUVOffset);
+        SetUniform2f(pShader, "u_scale",sprite_scale);
 
 
         if (texture != nullptr)
@@ -104,8 +105,8 @@ namespace fw {
         {
             float angle = segmentInterval * i;
 
-            vertices.push_back(cos(angle) * radius);//x
-            vertices.push_back(sin(angle) * radius);//y
+            vertices.push_back((float)cos(angle) * radius);//x
+            vertices.push_back((float)sin(angle) * radius);//y
             vertices.push_back(0);//u
             vertices.push_back(0);//v
             m_NumVertices++;

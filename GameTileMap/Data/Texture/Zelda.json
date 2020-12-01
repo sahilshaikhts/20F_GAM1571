@@ -2,7 +2,6 @@
 	"SpriteTool":	2,
 	"Texture":	"Zelda.png",
 	"Width":	256,
-	"Width":	256,
 	"Height":	128,
 	"Sprites":	[{
 			"Name":	"Fire1",
@@ -47,49 +46,49 @@
 			"W":	16,
 			"H":	32
 		}, {
-			"Name":	"LinkWalkDown1",
+			"Name":	"WalkDown1",
 			"X":	67,
 			"Y":	112,
 			"W":	16,
 			"H":	16
 		}, {
-			"Name":	"LinkWalkDown2",
+			"Name":	"WalkDown2",
 			"X":	17,
 			"Y":	78,
 			"W":	16,
 			"H":	16
 		}, {
-			"Name":	"LinkWalkLeft1",
+			"Name":	"WalkLeft1",
 			"X":	50,
 			"Y":	95,
 			"W":	16,
 			"H":	16
 		}, {
-			"Name":	"LinkWalkLeft2",
+			"Name":	"WalkLeft2",
 			"X":	0,
 			"Y":	12,
 			"W":	16,
 			"H":	16
 		}, {
-			"Name":	"LinkWalkRight1",
+			"Name":	"WalkRight1",
 			"X":	84,
 			"Y":	112,
 			"W":	16,
 			"H":	16
 		}, {
-			"Name":	"LinkWalkRight2",
+			"Name":	"WalkRight2",
 			"X":	17,
 			"Y":	61,
 			"W":	16,
 			"H":	16
 		}, {
-			"Name":	"LinkWalkUp1",
+			"Name":	"WalkUp1",
 			"X":	34,
 			"Y":	78,
 			"W":	16,
 			"H":	16
 		}, {
-			"Name":	"LinkWalkUp2",
+			"Name":	"WalkUp2",
 			"X":	67,
 			"Y":	95,
 			"W":	16,
@@ -245,7 +244,7 @@
 			"W":	16,
 			"H":	16
 		}, {
-			"Name":	"TileRockRed",
+			"Name": "TileRockRed",
 			"X":	119,
 			"Y":	78,
 			"W":	16,

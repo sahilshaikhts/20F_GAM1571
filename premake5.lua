@@ -55,6 +55,7 @@ files
 	"GameTileMap/Data/**.vert",
 	"GameTileMap/Data/**.frag",
 	"GameTileMap/Data/**.json",
+	"GameTileMap/Data/Animations/**.h",
 }
 
 includedirs

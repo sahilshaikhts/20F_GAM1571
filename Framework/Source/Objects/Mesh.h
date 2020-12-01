@@ -8,7 +8,7 @@ namespace fw {
     public:
         Mesh();
         virtual ~Mesh();
-        void Mesh::Draw(float x, float y, ShaderProgram* pShader, Texture* texture, vec4 color, vec2 aUVScale, vec2 aUVOffset);
+        void Mesh::Draw(float x, float y, vec2 sprite_scale, ShaderProgram* pShader, Texture* texture, vec4 color, vec2 aUVScale, vec2 aUVOffset);
 
         void SetUniform1i(ShaderProgram* pShader, char* name, int value);
 

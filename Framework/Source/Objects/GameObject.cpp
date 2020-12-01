@@ -14,7 +14,7 @@ namespace fw {
 		m_name = aName;
 		m_Core = aCore;
 		color = aColor;
-
+		sprite_scale = vec2(1, 1);
 	}
 
 	GameObject::~GameObject()
@@ -25,7 +25,7 @@ namespace fw {
 	void GameObject::Draw()
 	{
 		if(isVisible)
-		mesh->Draw(position.x, position.y, shader,m_texture,color,m_UVScale,m_UVOffset);
+		mesh->Draw(position.x, position.y, sprite_scale, shader,m_texture,color,m_UVScale,m_UVOffset);
 	}
 
 	void GameObject::Update(float deltaTime)

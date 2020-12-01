@@ -453,7 +453,7 @@ namespace fw {
 
                 pFWCore->m_KeyStates[wParam] = true;
 
-                InputEvent* event = new InputEvent(InputEvent::InputDevice::keyboard, InputEvent::DeviceState::pressed, wParam);
+                InputEvent* event = new InputEvent(InputEvent::InputDevice::keyboard, InputEvent::DeviceState::pressed, (unsigned int)wParam);
 
                 pFWCore->m_game->GetEventManager()->AddEvent(event);
             }
@@ -463,7 +463,7 @@ namespace fw {
         case WM_KEYUP:
         {
             pFWCore->m_KeyStates[wParam] = false;
-            InputEvent* event = new InputEvent(InputEvent::InputDevice::keyboard, InputEvent::DeviceState::released, wParam);
+            InputEvent* event = new InputEvent(InputEvent::InputDevice::keyboard, InputEvent::DeviceState::released, (unsigned int)wParam);
 
             pFWCore->m_game->GetEventManager()->AddEvent(event);
         }

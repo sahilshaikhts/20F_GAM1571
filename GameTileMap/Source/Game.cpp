@@ -3,10 +3,13 @@
 
 #include "Objects/Player.h"
 #include "Objects/PlayerController.h"
-#include "Objects/Enemy.h"
 #include "Objects/Shape.h"
 
 #include "Events/GameEvents.h"
+
+#include "TileMap/TileMap.h"
+#include "TileMap/Layout.h"
+
 #include<time.h>
 
 
@@ -67,16 +70,19 @@ void Game::Init()
     mesh_player = new fw::Mesh();
 
     mesh_player->SetDrawMode(GL_TRIANGLE_FAN);
-    for (int i = 0; i < totalVerts_heart; i++) {
+    for (int i = 0; i < totalVerts_sprite; i++) {
         mesh_player->AddVertex(shape_sprite[i]);//meshLives->CreateCircle(6, .15);
     }
-    player = new Player(this, m_controller, "Player", "Data/Texture/Zelda.json", vec4(.18f, .15f, .18f, 1));
+    player = new Player(this, m_controller, "Player", vec4(.18f, .15f, .18f, 1));
     texture_player = new fw::Texture("Data/Texture/Zelda.png");
     player->SetMesh(mesh_player);
     player->SetShader(m_shaders["Basic"]);
     player->SetTexture(texture_player);
     objects.push_back(player);
-
+	
+    fw::SpriteSheet* spr = new fw::SpriteSheet("Data/Texture/Zelda.json");
+	
+    m_tileMap=new TileMap(Layout_TestMap, texture_player,spr,m_shaders["Basic"], Size_TestMap.x, Size_TestMap.y);
 
     gameState = fw::GameState::Start;
     GameStart();//Direct function call instead of even to avoid delay in initializing pointers
@@ -116,6 +122,7 @@ void Game::Draw()
     glClearColor(0.7f, 0.75f, 0.8f, 1);
     glClear(GL_COLOR_BUFFER_BIT);
 
+    m_tileMap->Draw();
     if (gameState == fw::GameState::Playing && objects.size() != 0)
     {
         for (auto obj : objects)
@@ -200,7 +207,7 @@ void Game::OnEvent(fw::Event* pEvent)
 }
 void Game::GameStart()
 {
-    srand(time(0));
+    srand((unsigned int)time(0));
     timer = 0;
 
     gameState = fw::GameState::Playing;

@@ -50,3 +50,12 @@ void TileMap::Draw()
 		}
 	}
 }
+
+bool TileMap::IsWalkable(UINT aX,UINT aY)
+{
+	if(m_layout[(aY * m_MapSize.x + aX)]== TileType::empty || m_layout[(aY * m_MapSize.x + aX)] == TileType::dirt)
+	{
+		return true;
+	}
+	return false;
+}

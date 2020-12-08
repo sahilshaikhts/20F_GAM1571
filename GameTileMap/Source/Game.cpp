@@ -3,12 +3,14 @@
 
 #include "Objects/Player.h"
 #include "Objects/PlayerController.h"
+#include "Objects/Enemy.h"
 #include "Objects/Shape.h"
 
 #include "Events/GameEvents.h"
 
 #include "TileMap/TileMap.h"
 #include "TileMap/Layout.h"
+#include "TileMap/Pathfinder.h"
 
 #include<time.h>
 
@@ -16,11 +18,11 @@
 
 Game::Game(fw::FWCore* pFramework) :fw::GameCore(pFramework)
 {
-    
+
     gameState = fw::GameState::Start;
     m_controller = nullptr;
     mesh_player = nullptr;
-    texture_player = nullptr;
+    texture_sheet = nullptr;
     player = nullptr;
     timer = 0;
     vSync = false;
@@ -43,19 +45,19 @@ Game::~Game()
 
     if (uiManager != nullptr)
         delete uiManager;
-    
-    if (texture_player != nullptr)
-        delete texture_player;
-    
+
+    if (texture_sheet != nullptr)
+        delete texture_sheet;
+
     if (mesh_player != nullptr)
         delete mesh_player;
 
     if (player != nullptr)
         delete player;
-	
+
     if (m_tileMap != nullptr)
         delete m_tileMap;
-	
+
 }
 
 void Game::Init()
@@ -77,16 +79,25 @@ void Game::Init()
     for (int i = 0; i < totalVerts_sprite; i++) {
         mesh_player->AddVertex(shape_sprite[i]);//meshLives->CreateCircle(6, .15);
     }
+    fw::SpriteSheet* spr = new fw::SpriteSheet("Data/Texture/Zelda.json");
+
+	m_tileMap = new TileMap(Layout_TestMap, texture_sheet, spr, m_shaders["Basic"], Size_TestMap.x, Size_TestMap.y);
+	
+    
+        Enemy* enemy1 = new Enemy(this,m_tileMap, player, spr, vec2(2, 2), vec4::White(), mesh_player);
+        enemy1->SetShader(m_shaders["Basic"]);
+        enemy1->SetTexture(texture_sheet);
+        objects.push_back(enemy1);
+    
     player = new Player(this, m_controller, "Player", vec4(.18f, .15f, .18f, 1));
-    texture_player = new fw::Texture("Data/Texture/Zelda.png");
+    texture_sheet = new fw::Texture("Data/Texture/Zelda.png");
     player->SetMesh(mesh_player);
     player->SetShader(m_shaders["Basic"]);
-    player->SetTexture(texture_player);
+    player->SetTexture(texture_sheet);
     objects.push_back(player);
-	
-    fw::SpriteSheet* spr = new fw::SpriteSheet("Data/Texture/Zelda.json");
-	
-    m_tileMap=new TileMap(Layout_TestMap, texture_player,spr,m_shaders["Basic"], Size_TestMap.x, Size_TestMap.y);
+    
+
+
 
     gameState = fw::GameState::Start;
     GameStart();//Direct function call instead of even to avoid delay in initializing pointers

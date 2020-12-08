@@ -2,76 +2,108 @@
 #include"Enemy.h"
 #include "Events/GameEvents.h"
 #include"Objects/Player.h"
-Enemy::Enemy(fw::GameCore* core, Player* aPlayer, vec2 startPosition, vec2 aDir, vec4 aColor, fw::Mesh* aMesh, vec2 aBoundsCenter, float aBoundsRadius, float aRadius)
+#include"TileMap/Pathfinder.h"
+#include"TileMap/TileMap.h"
+Enemy::Enemy(fw::GameCore* core, TileMap* aTileMap, Player* aPlayer, fw::SpriteSheet* aSpriteSheet, vec2 startPosition,
+	vec4 aColor, fw::Mesh* aMesh) :GameObject(core, "Enemy", aColor)
 {
 	speed = 0;
 	m_Core = core;
 	player = aPlayer;
+	m_spriteSheet = aSpriteSheet;
+	sprite_scale = vec2(1, 1);
+	// !!!! TEMP(until anim implemented) !!!!
+	m_UVScale = m_spriteSheet->GetSpriteInfo("OctorocDown1")->m_UVScale;
+	m_UVOffset = m_spriteSheet->GetSpriteInfo("OctorocDown1")->m_UVOffset;
 
-	direction = aDir;
+	direction = vec2(0, 0);
 	position = startPosition;
 
 	color = aColor;
 	mesh = aMesh;
 	hp = 100;
-	boundsCenter = aBoundsCenter;
-	boundsRadius = aBoundsRadius;
-	radius = aRadius;
 	collisionState = fw::CollisionState::Idle;
+	m_tileMap = aTileMap;
+	old_position = position;
 
+	followTarget = false;
+	m_pathFinder = new Pathfinder(m_tileMap, 10, 10);
+	targetPos = vec2(rand() % 10, rand() % 10);
+	timer = 1;
 }
 
 Enemy::~Enemy()
 {
+	delete m_pathFinder;
 }
 
 void Enemy::Update(float deltaTime)
 {
-	position -= direction * speed * deltaTime;
-
-	if (position.GetDistance(player->position) < radius + player->radius)
-	{
-		CollisionEvent* event;
-		if (collisionState == fw::CollisionState::Idle) {
-			collisionState = fw::CollisionState::Colliding;
-
-			if (physicalCollider && hp > 0)
+	position += direction * 0.1f * deltaTime;
+	
+			if(timer<=0)
 			{
-				direction.x *= -1;
-				direction.y *= -1;
-				hp -= 20;
-				speed -= .5f;
-				color.a -= .1f;
+				if (followPath.size() > 0 && followTarget == true)
+				{
+					if (old_position.GetDistance(position) <= .01f)
+					{
+						vec2 nextNode = vec2(followPath[nextFollowNode].x, followPath[nextFollowNode].y);
+						position =nextNode;
+						nextFollowNode++;
+						if (nextFollowNode >= pathSize)
+						{
+							followTarget = false;
+						}
+						old_position = position;
+					}
+				}
+				timer = 1;
 			}
+			if (followPath.size() <= 0||targetPos.GetDistance(position)<.1f)
+			{
+				targetPos = vec2(rand() % 10, rand() % 10);
 
-			event = new CollisionEvent(player, this, fw::CollisionState::Entered);
-			m_Core->GetEventManager()->AddEvent(event);
-		}
-		else {
-			event = new CollisionEvent(player, this, fw::CollisionState::Colliding);
-			m_Core->GetEventManager()->AddEvent(event);
-		}
+				FindPath(ivec2(targetPos.x, targetPos.y));
+			}
+		timer -= deltaTime;
+}
+vec2 Enemy::ConvertTileIndexToPosition(int index, int mapWidth)
+{
+	return vec2((int)(index % mapWidth), (int)(index / mapWidth));
+	
+}ivec2 Enemy::ConvertTileIndexToIntPosition(int index, int mapWidth)
+{
+	return ivec2((int)(index % mapWidth), (int)(index / mapWidth));
+}
 
+void Enemy::FindPath(ivec2 atargetPos)
+{
+	followPath.clear();
+
+	if (m_pathFinder->FindPath(position.x, position.y, atargetPos.x - 1, atargetPos.y - 1))
+	{
+		int path[255];
+		pathSize = m_pathFinder->GetPath(path, 255, atargetPos.x - 1, atargetPos.y - 1);
+		for (int i = pathSize - 1; i >= 0; i--)
+		{
+			followPath.push_back(ConvertTileIndexToIntPosition(path[i], m_tileMap->GetMapSize().x));
+		}
+		nextFollowNode = 0;
+		followTarget = true;
+	}
+}
+void Enemy::MoveToNextNode()
+{
+	if (m_pathFinder->FindPath(position.x, position.y, targetPos.x - 1, targetPos.y - 1))
+	{
+		int path[255];
+		pathSize = m_pathFinder->GetPath(path, 255, targetPos.x - 1, targetPos.y - 1);
+		vec2 pos = (ConvertTileIndexToPosition(path[pathSize-1], m_tileMap->GetMapSize().x));
+		position = pos;
+		followTarget = true;
 	}
 	else
 	{
-		if (collisionState == fw::CollisionState::Colliding) {
-			collisionState = fw::CollisionState::Idle;
-			CollisionEvent* event = new CollisionEvent(player, this, fw::CollisionState::Exited);
-			m_Core->GetEventManager()->AddEvent(event);
-		}
-	}
-	if (position.GetDistance(boundsCenter) > boundsRadius)
-	{
-		if (physicalCollider && hp > 0)
-		{
-			direction.x *= -1;
-			direction.y *= -1;
-			hp -= 20;
-			speed -= .5f;
-			color.a -= .1f;
-		}
-		else
-			m_Core->GetEventManager()->AddEvent(new RemoveFromGameEvent(this));
+		targetPos = vec2(rand() % 10, rand() % 10);
 	}
 }

@@ -398,7 +398,8 @@ void Game::SpawnEnemy()
     vec2 velocity = (pos - (arenaCenter - randOffset)).GetNormalized();
 
     Enemy* newEn = new Enemy(this, player, pos, velocity, vec4(.9f, .2f, .3f, 1)/*vec4(.9f,.2f,.3f,1)*/, mesh_enemy, arenaCenter, arenaRadius, .2f);
-    newEn-> speed = (float)(rand() % enemyMaxSpeed + 4);
+    newEn-> speed = (float)(rand() % enemyMaxSpeed + 4)
+	;
 
     newEn->SetShader(m_pShader);
     newEn->physicalCollider = false;

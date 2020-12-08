@@ -52,8 +52,14 @@ Game::~Game()
     if (mesh_player != nullptr)
         delete mesh_player;
 
-    if (player != nullptr)
-        delete player;
+
+    for (fw::GameObject* obj : objects)
+    {
+    	if(obj!=nullptr)
+        delete obj;
+    }
+    objects.clear();
+	
 
     if (m_tileMap != nullptr)
         delete m_tileMap;
@@ -82,11 +88,12 @@ void Game::Init()
     fw::SpriteSheet* spr = new fw::SpriteSheet("Data/Texture/Zelda.json");
 
 	m_tileMap = new TileMap(Layout_TestMap, texture_sheet, spr, m_shaders["Basic"], Size_TestMap.x, Size_TestMap.y);
-	
-    
-        Enemy* enemy1 = new Enemy(this,m_tileMap, player, spr, vec2(2, 2), vec4::White(), mesh_player);
+
+
+    Enemy* enemy1 = new Enemy(this,m_tileMap, player, spr, vec2(2, 2), vec4::White(), mesh_player);
         enemy1->SetShader(m_shaders["Basic"]);
         enemy1->SetTexture(texture_sheet);
+        enemy = enemy1;
         objects.push_back(enemy1);
     
     player = new Player(this, m_controller, "Player", vec4(.18f, .15f, .18f, 1));
@@ -130,7 +137,7 @@ void Game::Update(float deltaTime)
 
 void Game::DebugUI()
 {
-    ImGui::Text("TIME :%.f", timer);
+   // ImGui::Text("Dist :%f", enemy->dist);
 }
 void Game::Draw()
 {

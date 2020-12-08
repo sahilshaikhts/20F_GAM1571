@@ -14,7 +14,6 @@ public:
 	};
 
 	Animation_Player(char* fName) {
-		
 		m_spriteSheet = new fw::SpriteSheet(fName);
 		//NAME OF FRAMES FROM JSON
 		frames[State::walk_Left].push_back("WalkLeft1");
@@ -31,7 +30,7 @@ public:
 	}
 	~Animation_Player()
 	{
-		delete m_spriteSheet;
+		delete m_spriteSheet; //throwing exception on deleting
 	}
 	std::map<State, std::vector<std::string>> frames;
 	

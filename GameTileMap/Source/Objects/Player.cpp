@@ -24,6 +24,7 @@ Player::Player(fw::GameCore* aCore, PlayerController* controller, std::string aN
 }
 Player::~Player()
 {
+	if(m_animation!=nullptr)
 	delete m_animation;
 }
 void Player::Update(float deltaTime)

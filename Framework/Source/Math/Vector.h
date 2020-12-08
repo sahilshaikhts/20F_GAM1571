@@ -31,7 +31,13 @@ namespace  fw {
 		vec2 operator-() const { return vec2(-x, -y); }//invert
 		
 		float Magnitude() { float r = (x * x) + (y * y); return ((float)sqrt(r)); }
-		float GetDistance(vec2 other) { vec2 diff(other.x - x, other.y - y); return diff.Magnitude(); }
+		float GetDistance(vec2 other)
+		{
+			vec2 diff=vec2(other.x - x, other.y - y);
+			float dist = sqrt((diff.x * diff.x )+ (diff.y * diff.y));
+			
+			return dist;
+		}
 		float DotProduct(vec2 other) { return(x * other.x + y * other.y); }
 		void Normalize() { float magn = Magnitude(); x /=magn; y /= magn; }
 		vec2 GetNormalized() { return vec2(x / Magnitude(), y / Magnitude()); }

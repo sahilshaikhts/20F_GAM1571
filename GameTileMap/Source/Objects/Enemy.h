@@ -11,9 +11,9 @@ private:
 	int hp,nextFollowNode=0,pathSize;
 	std::vector<ivec2> followPath;
 ;	fw::CollisionState  collisionState;
-	fw::SpriteSheet* m_spriteSheet;
-	Pathfinder* m_pathFinder;
-	TileMap* m_tileMap;
+	fw::SpriteSheet* m_spriteSheet=nullptr;
+	Pathfinder* m_pathFinder= nullptr;
+	TileMap* m_tileMap= nullptr;
 
 	bool followTarget = false;
 	
@@ -22,6 +22,7 @@ private:
 	void FindPath(ivec2 targetPos);
 	void MoveToNextNode();
 public:
+	float dist;//temp
 	float speed,timer=1;
 	bool physicalCollider=false;
 	Enemy(fw::GameCore* core,TileMap* aTileMap,Player* aPlayer, fw::SpriteSheet* aSpriteSheet,vec2 startPosition,vec4 aColor, fw::Mesh* aMesh);

@@ -43,6 +43,7 @@ protected:
 	PlayerController* m_controller;
 
 	Player* player;
+	Enemy* enemy;
 	fw::Mesh* mesh_player;
 	fw::Texture* texture_sheet;
 	TileMap* m_tileMap;

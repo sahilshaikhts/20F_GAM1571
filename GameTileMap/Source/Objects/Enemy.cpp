@@ -4,6 +4,8 @@
 #include"Objects/Player.h"
 #include"TileMap/Pathfinder.h"
 #include"TileMap/TileMap.h"
+#include<time.h>
+
 Enemy::Enemy(fw::GameCore* core, TileMap* aTileMap, Player* aPlayer, fw::SpriteSheet* aSpriteSheet, vec2 startPosition,
 	vec4 aColor, fw::Mesh* aMesh) :GameObject(core, "Enemy", aColor)
 {
@@ -28,8 +30,10 @@ Enemy::Enemy(fw::GameCore* core, TileMap* aTileMap, Player* aPlayer, fw::SpriteS
 
 	followTarget = false;
 	m_pathFinder = new Pathfinder(m_tileMap, 10, 10);
-	targetPos = vec2(rand() % 10, rand() % 10);
 	timer = 1;
+	srand((unsigned int)time(0));
+	targetPos = vec2((float)(rand() % 10)+1, (float)(rand() % 10)+1);
+
 }
 
 Enemy::~Enemy()
@@ -41,35 +45,39 @@ void Enemy::Update(float deltaTime)
 {
 	position += direction * 0.1f * deltaTime;
 	
-			if(timer<=0)
+	if (timer <= 0)
+	{
+		MoveToNextNode();
+		//if (followPath.size() > 0 && followTarget == true)
+		{
+			/*
+			if (old_position.GetDistance(position) <= .01f)
 			{
-				if (followPath.size() > 0 && followTarget == true)
+				vec2 nextNode = vec2((float)followPath[nextFollowNode].x, (float)followPath[nextFollowNode].y);
+				position =nextNode;
+				nextFollowNode++;
+				if (nextFollowNode >= pathSize)
 				{
-					if (old_position.GetDistance(position) <= .01f)
-					{
-						vec2 nextNode = vec2(followPath[nextFollowNode].x, followPath[nextFollowNode].y);
-						position =nextNode;
-						nextFollowNode++;
-						if (nextFollowNode >= pathSize)
-						{
-							followTarget = false;
-						}
-						old_position = position;
-					}
+					followTarget = false;
 				}
-				timer = 1;
+				old_position = position;
 			}
-			if (followPath.size() <= 0||targetPos.GetDistance(position)<.1f)
-			{
-				targetPos = vec2(rand() % 10, rand() % 10);
+		}*/
+		}
+		timer = 1;
+	}
+		if (followPath.size() <= 0 || targetPos.GetDistance(position) < .1f)
+		{
+			targetPos = vec2((float)(rand() % 10) + 1, (float)(rand() % 10) + 1);
+		}
 
-				FindPath(ivec2(targetPos.x, targetPos.y));
-			}
+	
+	
 		timer -= deltaTime;
 }
 vec2 Enemy::ConvertTileIndexToPosition(int index, int mapWidth)
 {
-	return vec2((int)(index % mapWidth), (int)(index / mapWidth));
+	return vec2((float)(index % mapWidth), (float)(index / mapWidth));
 	
 }ivec2 Enemy::ConvertTileIndexToIntPosition(int index, int mapWidth)
 {
@@ -80,7 +88,7 @@ void Enemy::FindPath(ivec2 atargetPos)
 {
 	followPath.clear();
 
-	if (m_pathFinder->FindPath(position.x, position.y, atargetPos.x - 1, atargetPos.y - 1))
+	if (m_pathFinder->FindPath((int)position.x, (int)position.y, atargetPos.x - 1, atargetPos.y - 1))
 	{
 		int path[255];
 		pathSize = m_pathFinder->GetPath(path, 255, atargetPos.x - 1, atargetPos.y - 1);
@@ -94,16 +102,12 @@ void Enemy::FindPath(ivec2 atargetPos)
 }
 void Enemy::MoveToNextNode()
 {
-	if (m_pathFinder->FindPath(position.x, position.y, targetPos.x - 1, targetPos.y - 1))
+	if (m_pathFinder->FindPath((int)position.x, (int)position.y, (int)targetPos.x - 1, (int)targetPos.y - 1))
 	{
 		int path[255];
-		pathSize = m_pathFinder->GetPath(path, 255, targetPos.x - 1, targetPos.y - 1);
-		vec2 pos = (ConvertTileIndexToPosition(path[pathSize-1], m_tileMap->GetMapSize().x));
+		pathSize = m_pathFinder->GetPath(path, 255, (int)targetPos.x - 1, (int)targetPos.y - 1);
+		vec2 pos = (ConvertTileIndexToPosition(path[pathSize-2], m_tileMap->GetMapSize().x));
 		position = pos;
 		followTarget = true;
-	}
-	else
-	{
-		targetPos = vec2(rand() % 10, rand() % 10);
 	}
 }
